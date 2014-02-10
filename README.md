@@ -18,10 +18,6 @@ This script changes your Ableton MIDI Remote configs, and could introduce instab
 
 The author cannot be help responsible for any harm or damage resulting from the use of the software.
 
-## Licence
-
-This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License (http://creativecommons.org/licenses/by-nc/4.0/deed.en_US)
-
 ## Compatibility
 
 Ubermap requires Ableton Live 9.1.1 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself.
