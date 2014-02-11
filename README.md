@@ -139,4 +139,4 @@ Have you changed "Ignore = True" to "Ignore = False" in the config file? If so, 
 
 ## Support
 
-For support, please ask in the thread on the Ableton forum - I can't offer any guarantees of support but will try and help.
+For support, please ask in the thread on the Ableton forum (https://forum.ableton.com/viewtopic.php?f=55&t=201849) - I can't offer any guarantees of support but will try and help.
