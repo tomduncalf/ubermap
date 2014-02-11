@@ -24,7 +24,7 @@ cp Devices.py "$LIVE_MIDI_REMOTE_PATH/_Generic/"
 cp DeviceParameterComponent.py "$LIVE_MIDI_REMOTE_PATH/Push/"
 
 # Copy config
-mkdir -p "~/Ubermap/Devices"
+mkdir -p ~/Ubermap/Devices
 cp_if_ne ../Config/devices.cfg ~/Ubermap/
 cp_if_ne ../Config/global.cfg ~/Ubermap/
 

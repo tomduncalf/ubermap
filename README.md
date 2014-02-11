@@ -18,6 +18,10 @@ This script changes your Ableton MIDI Remote configs, and could introduce instab
 
 The author cannot be help responsible for any harm or damage resulting from the use of the software.
 
+## Licence
+
+This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License (http://creativecommons.org/licenses/by-nc/4.0/deed.en_US)
+
 ## Compatibility
 
 Ubermap requires Ableton Live 9.1.1 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself.
@@ -26,7 +30,7 @@ Ubermap requires Ableton Live 9.1.1 and a Mac. I've tried getting it up and runn
 
 These instructions are deliberately kept slightly vague for now to make sure users have some idea what they are doing technically, sorry about that - I'll update with step by step instructions once a few people have tested the script! Note that ~ referes to your user folder (/Users/username)
 
-To install, extract the ZIP file somewhere and execute Devices/install.sh from a Terminal. This will copy the appropriate files to "/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
+To install, extract the ZIP file somewhere, open a Terminal, change to the Devices folder and execute install.sh. This will copy the appropriate files to "/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
 
 Note that my Devices.py also includes the improved default mappings by TomViolenz and other contributors on the Ableton forum - see https://forum.ableton.com/viewtopic.php?f=55&t=198946&p=1562395#p1562395.
 
