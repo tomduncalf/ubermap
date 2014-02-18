@@ -64,15 +64,17 @@ class UbermapDevices:
 
         count = 0
         bank = 1
+        total_count = 1
         for i in device.parameters[1:]:
             if(count == 0):
                 section = 'Bank ' + str(bank)
                 config[self.SECTION_BANKS][section] = {}
                 bank = bank + 1
 
-            config[self.SECTION_BANKS][section][i.original_name] = i.original_name 
+            config[self.SECTION_BANKS][section][str(total_count) + "_" + i.original_name] = i.original_name 
 
             count = count + 1
+            total_count = total_count + 1
             if(count == self.PARAMS_PER_BANK):
                 count = 0
         config[self.SECTION_BEST_OF]['Bank']  = config[self.SECTION_BANKS].itervalues().next()
@@ -99,10 +101,12 @@ class UbermapDevices:
             return False
 
         def get_parameter_by_name(device, nameMapping):
+            count = 0
             for i in device.parameters:
-                if i.original_name == nameMapping[0]:
+                if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
                     i.custom_name = nameMapping[1]
                     return i
+                count = count + 1
 
         def names_to_params(bank):
             return map(partial(get_parameter_by_name, device), bank.items())
