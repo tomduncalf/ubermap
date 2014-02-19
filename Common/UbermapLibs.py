@@ -1,6 +1,6 @@
 import os
 
-UBERMAP_ROOT = MAPPING_DIRECTORY = os.path.join(os.path.expanduser("~") + 'Ubermap')
+UBERMAP_ROOT = MAPPING_DIRECTORY = os.path.join(os.path.expanduser("~"), 'Ubermap')
 
 
 class UbermapLogger:
