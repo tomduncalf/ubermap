@@ -36,7 +36,26 @@ Note that my Devices.py also includes the improved default mappings by TomViolen
 
 I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.1.1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=128".
 
-Once installed, you need to restart Live for changes to take effect. 
+Once installed, you need to restart Live for changes to take effect.
+
+## Manual (Windows) Installation 
+
+To install the script manually (or on Windows - please note this has not been tested so use common sense and let me know of any errors!), do the following:
+
+1. Backup your Live Remote MIDI Scripts folder
+2. Create a new directory called Ubermap inside your Live Remote MIDI Scripts folder
+3. Copy all the files from the unzipped Common folder (where you unzipped Ubermap) into the Ubermap folder you crated in step 2
+4. Copy UbermapDevices.py from the unzipped Devices folder into the Ubermap folder you created in step 2
+5. Copy Devices.py from the unzipped Devices folder to the _Generic folder in your Live Remote MIDI Scripts folder
+6. Copy DeviceParameterComponent.py from the unzipped Devices folder to the Push folder in your Live Remote MIDI Scripts folder
+7. Delete or rename (for backup purposes) the following files to make Live read the new Python files:
+  - *.pyc inside the Ubermap folder (will only exist if you are upgrading)
+  - Devices.pyc inside the _Generic folder
+  - DeviceParameterComponent.pyc inside the Push folder
+8. Create a folder called Ubermap in your user folder (e.g. C:\Users\Tom\Ubermap)
+9. Create a folder called Devices inside this Ubermap folder (e.g. C:\Users\Tom\Ubermap\Devices)
+10. Copy all the files from the unzipped Config folder into the Ubermap folder you created in step 8
+11. (Re)start Live
 
 ## Summary
 
@@ -139,4 +158,4 @@ Have you changed "Ignore = True" to "Ignore = False" in the config file? If so, 
 
 ## Support
 
-For support, please ask in the thread on the Ableton forum (https://forum.ableton.com/viewtopic.php?f=55&t=201849) - I can't offer any guarantees of support but will try and help.
+For support, please ask in the thread on the Ableton forum - I can't offer any guarantees of support but will try and help.
