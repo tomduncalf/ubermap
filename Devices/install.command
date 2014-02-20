@@ -10,6 +10,8 @@ function cp_if_ne {
 
 LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts"
 
+cd ${0%/*}
+
 # Backup
 cp_if_ne "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc" "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc.ubermap-backup" 
 cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc.ubermap-backup" 
