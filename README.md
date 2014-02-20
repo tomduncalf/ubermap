@@ -28,15 +28,21 @@ Ubermap requires Ableton Live 9.1.1 and a Mac. I've tried getting it up and runn
 
 ## Installation
 
-These instructions are deliberately kept slightly vague for now to make sure users have some idea what they are doing technically, sorry about that - I'll update with step by step instructions once a few people have tested the script! Note that ~ referes to your user folder (/Users/username)
+I've made the installation a bit simpler as the script seems to work OK for others but please still make sure you understand what the script is doing and how to use it (and any potential risks associated with doing so), as I can't provide any technical support or be held resposible if anything goes wrong! Make sure you have a backup of anything important :)
 
-To install, extract the ZIP file somewhere, open a Terminal, change to the Devices folder and execute install.sh. This will copy the appropriate files to "/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
+Note that ~ refers to your user folder (/Users/username).
+
+To install, download the ZIP file from Github (https://github.com/tomduncalf/ubermap/archive/master.zip) and unzip it somewhere. Open the unzipped folder in Finder, go in to the Devices folder, and double click "install.command". This should open up a Terminal window with some install messages, followed by "Ubermap installed - now restart Ableton Live". You can now close/quit the Terminal window.
+
+I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.1.1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
+
+At this point you can (re-)start Ableton and the script should be working.
+
+### Installation Notes
 
 Note that my Devices.py also includes the improved default mappings by TomViolenz and other contributors on the Ableton forum - see https://forum.ableton.com/viewtopic.php?f=55&t=198946&p=1562395#p1562395.
 
-I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.1.1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=128".
-
-Once installed, you need to restart Live for changes to take effect.
+If you want to know what the install script is doing, you can look at install.command in a text editor, or read the manual instructions below - a brief summary: This will copy the appropriate files to "/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
 
 ## Manual (Windows) Installation 
 
@@ -55,7 +61,8 @@ To install the script manually (or on Windows - please note this has not been te
 8. Create a folder called Ubermap in your user folder (e.g. C:\Users\Tom\Ubermap)
 9. Create a folder called Devices inside this Ubermap folder (e.g. C:\Users\Tom\Ubermap\Devices)
 10. Copy all the files from the unzipped Config folder into the Ubermap folder you created in step 8
-11. (Re)start Live
+11. Create an Options.txt as described above (not sure where this should live on Windows)
+12. (Re)start Live
 
 ## Summary
 
