@@ -83,7 +83,8 @@ class UbermapDevices:
         log('INFO dumped device: ' + self.get_device_name(device))
 
     def get_device_config(self, device):
-        return config.load(self.get_device_name(device), 'Devices')
+        cfg = config.load(self.get_device_name(device), 'Devices')
+        return cfg if cfg.get('Config', 'Ignore') == 'False' else False
 
     def get_custom_device_banks(self, device):
         device_config = self.get_device_config(device)
