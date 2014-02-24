@@ -84,7 +84,10 @@ class UbermapDevices:
 
     def get_device_config(self, device):
         cfg = config.load(self.get_device_name(device), 'Devices')
+        if not cfg:
+            return False
         return cfg if cfg.get('Config', 'Ignore') == 'False' else False
+
 
     def get_custom_device_banks(self, device):
         device_config = self.get_device_config(device)
