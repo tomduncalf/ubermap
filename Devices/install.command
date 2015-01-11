@@ -1,7 +1,9 @@
 #!/bin/bash
 
+cd "$(dirname "$0")"
+
 function cp_if_ne {
-    if [ ! -f "$2" ] 
+    if [ ! -f "$2" ]
         then
         echo "Backing up file $1"
         cp "$1" "$2"
@@ -13,8 +15,8 @@ LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 9 Suite.app/Contents/App-Resou
 cd ${0%/*}
 
 # Backup
-cp_if_ne "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc" "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc.ubermap-backup" 
-cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc.ubermap-backup" 
+cp_if_ne "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc" "$LIVE_MIDI_REMOTE_PATH/_Generic/Devices.pyc.ubermap-backup"
+cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/DeviceParameterComponent.pyc.ubermap-backup"
 
 # Copy
 mkdir -p "$LIVE_MIDI_REMOTE_PATH/Ubermap"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd "$(dirname "$0")"
+
 function cp_if_ne {
     if [ ! -f "$2" ]
         then
