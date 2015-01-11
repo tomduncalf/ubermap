@@ -1,8 +1,8 @@
-import os.path 
+import os.path
 from configobj import ConfigObj
 from functools import partial
 import hashlib
-from Ubermap.UbermapLibs import log, log_call, config 
+from Ubermap.UbermapLibs import log, log_call, config
 
 class UbermapDevices:
     PARAMS_PER_BANK = 8
@@ -14,7 +14,7 @@ class UbermapDevices:
 
     def __init__(self):
         self.cfg = config.load('devices')
-        log('INFO UbermapDevices ready')
+        log.info('UbermapDevices ready')
 
     def get_device_name(self, device):
         name = device.class_display_name
@@ -32,12 +32,12 @@ class UbermapDevices:
     def dump_device(self, device):
         filepath = self.get_device_filename(device)
         if(self.get_device_config(device) or os.path.isfile(filepath)):
-            log('INFO not dumping device: ' + self.get_device_name(device))
+            log.debug('not dumping device: ' + self.get_device_name(device))
             return False
-        log('INFO dumping device: ' + self.get_device_name(device))
+        log.debug('dumping device: ' + self.get_device_name(device))
 
         config = ConfigObj()
-        config.filename = filepath 
+        config.filename = filepath
 
         config[self.SECTION_BANKS]   = {}
         config[self.SECTION_BEST_OF] = {}
@@ -71,7 +71,7 @@ class UbermapDevices:
                 config[self.SECTION_BANKS][section] = {}
                 bank = bank + 1
 
-            config[self.SECTION_BANKS][section][str(total_count) + "_" + i.original_name] = i.original_name 
+            config[self.SECTION_BANKS][section][str(total_count) + "_" + i.original_name] = i.original_name
 
             count = count + 1
             total_count = total_count + 1
@@ -80,7 +80,7 @@ class UbermapDevices:
         config[self.SECTION_BEST_OF]['Bank']  = config[self.SECTION_BANKS].itervalues().next()
 
         config.write()
-        log('INFO dumped device: ' + self.get_device_name(device))
+        log.info('dumped device: ' + self.get_device_name(device))
 
     def get_device_config(self, device):
         cfg = config.load(self.get_device_name(device), 'Devices')
