@@ -1,5 +1,6 @@
 import os
 
+LOG_ENABLED = False
 UBERMAP_ROOT = MAPPING_DIRECTORY = os.path.join(os.path.expanduser("~"), 'Ubermap')
 
 
@@ -15,6 +16,8 @@ class UbermapLogger:
         return log_h
 
     def write(self, msg, name):
+        if not LOG_ENABLED:
+            return
         self._get_log_file(name).write(msg + '\n')
         self._get_log_file(name).flush()
 
@@ -22,7 +25,7 @@ class UbermapLogger:
 from configobj import ConfigObj
 class UbermapConfig:
 
-    _config_cache = {} 
+    _config_cache = {}
 
     def get_config_path(self, name, subdir = None):
         name = name + ".cfg"
@@ -69,7 +72,7 @@ class UbermapConfig:
                 data = data[k]
             return data
         except:
-            return None 
+            return None
 
 
 class UbermapConfigProxy:
