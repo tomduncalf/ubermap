@@ -10,7 +10,7 @@ function cp_if_ne {
     fi
 }
 
-LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts"
+LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 9 Beta.app/Contents/App-Resources/MIDI Remote Scripts"
 
 cd ${0%/*}
 
