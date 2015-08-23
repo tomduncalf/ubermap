@@ -4,10 +4,10 @@ from _Framework.Util import group
 from Ubermap import UbermapDevices
 ubermap = UbermapDevices.UbermapDevices()
 
-""" 
-Ubermap alpha v0.1: modified devices.py 
+"""
+Ubermap alpha v0.1: modified devices.py
 ---------------------------------------
-This file has been modified from the version edited by Stray on 10/26/13 to allow 
+This file has been modified from the version edited by Stray on 10/26/13 to allow
 easy mapping of plugins, using custom configuration files. It also contains the
 Live Community Mapping, which enhances the original mappings for Ableton's devices
 (https://forum.ableton.com/viewtopic.php?f=55&t=198946&p=1562395#p1562395).
@@ -781,10 +781,16 @@ def parameter_banks(device, device_dict = DEVICE_DICT, ubermap_skip = False):
             #return []
 
     #return []
-    
-    
+
+
 def best_of_parameter_bank(device, device_bob_dict = DEVICE_BOB_DICT, ubermap_skip = False):
     """ Revised function by Stray that should work fine with any type of device. """
+    device_name = device.class_display_name
+
+    """"Fix for Massive that only works if the first 8 parameters are the macro knobs, which is default"""
+    if device_name == 'Massive':
+        return device.parameters[1:9]
+
     if not ubermap_skip:
         ubermap_bank = ubermap.get_custom_device_params(device, ubermap.SECTION_BEST_OF)
         if ubermap_bank:
@@ -827,4 +833,3 @@ def get_parameter_by_name(device, name):
     for i in device.parameters:
         if i.original_name == name:
             return i
-
