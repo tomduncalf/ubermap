@@ -26,7 +26,7 @@ class UbermapDevices:
             only works if macros set to params 2-9 (default)
             '''
 
-            if name == 'Massive':
+            if name in self.cfg.get('devices_with_macro_knobs'):
                 for i in device.parameters[10:]:
                     params += i.original_name
             else:
