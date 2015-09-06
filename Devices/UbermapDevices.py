@@ -22,16 +22,16 @@ class UbermapDevices:
             params = ''
 
             '''
-	        Creates cfg without hash for Massive from params 10+
-	        only works if macros set to params 2-9 (default)
-			'''
+            Creates cfg without hash for Massive from params 10+
+            only works if macros set to params 2-9 (default)
+            '''
 
             if name == 'Massive':
-            	for i in device.parameters[10:]:
-                	params += i.original_name
+                for i in device.parameters[10:]:
+                    params += i.original_name
             else:
-            	for i in device.parameters[1:]:
-                	params += i.original_name
+                for i in device.parameters[1:]:
+                    params += i.original_name
             name += '_' + hashlib.md5(params).hexdigest()
         return name
 
