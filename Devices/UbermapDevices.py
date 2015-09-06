@@ -20,8 +20,18 @@ class UbermapDevices:
         name = device.class_display_name
         if self.cfg.get('use_md5'):
             params = ''
-            for i in device.parameters[1:]:
-                params += i.original_name
+
+            '''
+            Creates cfg without hash for Massive from params 10+
+            only works if macros set to params 2-9 (default)
+            '''
+
+            if name in self.cfg.get('devices_with_macro_knobs'):
+                for i in device.parameters[10:]:
+                    params += i.original_name
+            else:
+                for i in device.parameters[1:]:
+                    params += i.original_name
             name += '_' + hashlib.md5(params).hexdigest()
         return name
 
