@@ -1,25 +1,50 @@
-# Embedded file name: /Users/versonator/Jenkins/live/output/mac_64_static/Release/python-bundle/MIDI Remote Scripts/Push/__init__.py
-from __future__ import absolute_import, print_function
-from ableton.v2.control_surface.capabilities import controller_id, inport, outport, AUTO_LOAD_KEY, CONTROLLER_ID_KEY, FIRMWARE_KEY, HIDDEN, NOTES_CC, PORTS_KEY, SCRIPT, SYNC, TYPE_KEY
-from .firmware_handling import get_provided_firmware_version
-from .push import Push
+# Ubermap imports
+from Ubermap import UbermapDevices
+from Ubermap.UbermapLibs import log
+ubermap = UbermapDevices.UbermapDevices()
 
-from Ubermap import UbermapDevicesPatches
+# DeviceParameterComponent
+from itertools import chain, repeat, izip_longest
 
-def get_capabilities():
-    return {CONTROLLER_ID_KEY: controller_id(vendor_id=2536, product_ids=[21], model_name='Ableton Push'),
-     PORTS_KEY: [inport(props=[HIDDEN, NOTES_CC, SCRIPT]),
-                 inport(props=[]),
-                 outport(props=[HIDDEN,
-                  NOTES_CC,
-                  SYNC,
-                  SCRIPT]),
-                 outport(props=[])],
-     TYPE_KEY: 'push',
-     FIRMWARE_KEY: get_provided_firmware_version(),
-     AUTO_LOAD_KEY: True}
+from pushbase import consts
+from pushbase.parameter_provider import ParameterProvider
 
+import Live
+AutomationState = Live.DeviceParameter.AutomationState
+
+from pushbase.device_parameter_component import DeviceParameterComponent
+
+# DeviceParameterBank
+from pushbase import device_parameter_bank
+from pushbase.device_parameter_bank import DeviceParameterBank, DescribedDeviceParameterBank, create_device_bank
+
+# BankingUtil
+#from pushbase.banking_util import BankingInfo
+from pushbase import banking_util
+
+# Others
+from pushbase.device_component import DeviceComponent
+from pushbase.parameter_provider import ParameterInfo, generate_info
+
+from ableton.v2.base.collection import IndexedDict
+
+# Devices
+from _Generic import Devices
+
+# Looking inside things
+import inspect
+import types
+
+# "Monkey patch" Live methods to do fun things without having to mess with the original functionality :)
 def apply_ubermap_patches():
+    log.info("Applying UbermapDevices patches")
+
+    apply_log_method_patches()
+    apply_banking_util_patches()
+    apply_device_component_patches()
+    apply_device_parameter_bank_patches()
+
+def apply_log_method_patches():
     # Log any method calls made to the object - useful for tracing execution flow
     def __getattribute__(self, name):
         returned = object.__getattribute__(self, name)
@@ -30,7 +55,7 @@ def apply_ubermap_patches():
     #DeviceComponent.__getattribute__ = __getattribute__
     #DeviceParameterBank.__getattribute__ = __getattribute__
 
-    # banking_util
+def apply_banking_util_patches():
     # device_bank_names - return ubermap bank names if defined, otherwise use the default
     device_bank_names_orig = banking_util.device_bank_names
 
@@ -56,7 +81,7 @@ def apply_ubermap_patches():
 
     banking_util.device_bank_count = device_bank_count
 
-    # DeviceComponent
+def apply_device_component_patches():
     # _get_provided_parameters - return ubermap parameter names if defined, otherwise use the default
     _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
 
@@ -74,6 +99,7 @@ def apply_ubermap_patches():
 
     DeviceComponent._get_provided_parameters = _get_provided_parameters
 
+def apply_device_parameter_bank_patches():
     # DeviceParameterBank
     # _collect_parameters - this method is called by _update_parameters to determine whether we should
     # notify that parameters have been updated or not, but is hardcoded to use the default bank size
@@ -91,10 +117,3 @@ def apply_ubermap_patches():
         return orig
 
     DeviceParameterBank._collect_parameters = _collect_parameters
-
-def create_instance(c_instance):
-    """ Creates and returns the Push script """
-
-    UbermapDevicesPatches.apply_ubermap_patches()
-
-    return Push(c_instance=c_instance)
