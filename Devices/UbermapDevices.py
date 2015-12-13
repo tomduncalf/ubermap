@@ -7,7 +7,6 @@ from Ubermap.UbermapLibs import log, log_call, config
 class UbermapDevices:
     PARAMS_PER_BANK = 8
     SECTION_BANKS   = 'Banks'
-    SECTION_BEST_OF = 'BestOfBank'
     SECTION_CONFIG  = 'Config'
 
     device_config_cache = {}
@@ -17,6 +16,9 @@ class UbermapDevices:
         log.info('UbermapDevices ready')
 
     def get_device_name(self, device):
+        if not device:
+            return ''
+
         name = device.class_display_name
         if self.cfg.get('use_md5'):
             params = ''
@@ -40,7 +42,6 @@ class UbermapDevices:
         config.filename = filepath
 
         config[self.SECTION_BANKS]   = {}
-        config[self.SECTION_BEST_OF] = {}
         config[self.SECTION_CONFIG]  = {}
         config[self.SECTION_CONFIG]['Cache']  = False
         config[self.SECTION_CONFIG]['Ignore'] = True
@@ -77,7 +78,6 @@ class UbermapDevices:
             total_count = total_count + 1
             if(count == self.PARAMS_PER_BANK):
                 count = 0
-        config[self.SECTION_BEST_OF]['Bank']  = config[self.SECTION_BANKS].itervalues().next()
 
         config.write()
         log.info('dumped device: ' + self.get_device_name(device))

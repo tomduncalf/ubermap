@@ -12,7 +12,7 @@ Note that ~ refers to your user folder (/Users/username).
 
 To install, download the ZIP file from Github (https://github.com/tomduncalf/ubermap/archive/master.zip) and unzip it somewhere. Open the unzipped folder in Finder, go in to the Devices folder, and double click "install.command". This should open up a Terminal window with some install messages, followed by "Ubermap installed - now restart Ableton Live". You can now close/quit the Terminal window.
 
-I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.1.1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
+I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.4.5b4/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
 
 At this point you can (re-)start Ableton and the script should be working.
 
@@ -64,17 +64,13 @@ Configuration files are formatted using something resembling the ini file format
     InternalParamName3 = Display Name 3
     "" = ""
     InternalParamName4 = Display Name 4
-    [BestOfBank]
-    [[Bank]]
-    InternalParamName1 = Best of Param Name 1
-    InternalParamName4 = Best of Param Name 2
     [Config]
     Cache = False
     Ignore = False
 
 All visible parameters will by default be exported into the [Banks] section, split into banks of 8. You can then go in and rename banks, move parameters between, rename parameters (changing the part after the "=" to set the display name for a parameter) and insert blank spaces on the display (achieved by adding a line with an empty mapping: "" = "").
 
-The [BestOfBank] section contains a single bank, which is the "best of" bank shown on Push when you select a device but don't go "in" to view all parameters. This is populated with the first 8 parameters in the default export, but you can reference whichever parameters you want in here by copying the name from the [Banks] section, creating a more useful top level mapping.
+Note that in 9.5, it seems that the "Best Of" bank (which used to be the bank shown on Push when you select a device but don't go "in" to view all parameters) has been done away with, and instead the first bank is shown when you select but don't go "in to" a plugin device. To replicate this functionality in 9.5, set your device configuration file up so that the first bank you define has the controllers you want quick access to without going "in" to the device (you could call this bank "Best Of" and replicate the parameters in later banks if you like).
 
 The [Config] section is for Ubermap config - for now, the "Cache" parameter doesn't do anything (this will probably be removed, as all config files are now cached based on modified time, so any changes you make are reflected as soon as you save the file and reselect the device on Push).
 
@@ -110,6 +106,8 @@ Included example device mappings are:
 - NI Monark (Reaktor5_9c1425c4d9e6878ca148439e91cd63a6.cfg)
 
 If they don't work, you might have a different set of parameters exposed and therefore a different hash (see below) to me, in which case you can try just copying the contents of the example into your generated config file (see below again).
+
+Note that these haven't been updated for or tested with 9.5 yet.
 
 ## FAQs
 

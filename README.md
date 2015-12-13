@@ -8,8 +8,6 @@ Features:
 
 - Easy customisation of device bank and parameter names displayed on Push, for both internal and plugin devices, using simple configuration files for each device
 - Modify configurations instantly without reloading Live
-- (Very alpha!) Preview audio samples in a drum rack as you browse
-- More cool stuff coming soon :)
 
 For information on installing and using each feature, please read the README.md in the relevant directory (BrowserPreview or Devices) - each component can be installed separately.
 
@@ -27,7 +25,7 @@ This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 Int
 
 ## Compatibility
 
-Ubermap requires Ableton Live 9.1.x and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself.
+Ubermap requires Ableton Live 9.5.1beta4 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself.
 
 ## Installation
 
