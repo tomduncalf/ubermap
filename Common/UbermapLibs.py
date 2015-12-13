@@ -33,7 +33,7 @@ class UbermapLogger:
             self.write('DEBUG: ' + msg, name)
 
     def info(self, msg, name = None):
-        if self.cfg.get('Log', 'info') == 'True':
+        if self.cfg.get('Log', 'Info') == 'True':
             self.write('INFO: ' + msg, name)
 
     def error(self, msg, name = None):

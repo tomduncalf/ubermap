@@ -1,0 +1,26 @@
+parameter_to_string_orig = DeviceParameterComponent.parameter_to_string
+
+    def parameter_to_string(self, parameter):
+        return 'Hello'
+        #return parameter_to_string_orig(self, parameter)
+
+    DeviceParameterComponent.parameter_to_string = parameter_to_string
+
+
+
+    _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
+
+    def _get_provided_parameters(self):
+        ret = _get_provided_parameters_orig(self)
+
+        ret = map(lambda p: ParameterInfo(name = 'Hello', parameter=p.parameter, default_encoder_sensitivity=p.default_encoder_sensitivity, fine_grain_encoder_sensitivity=p.fine_grain_encoder_sensitivity), ret)
+
+        #with open('/tmp/hello', 'a') as f:
+        #    f.write(str(ret) + '\n')
+
+        #p = ParameterInfo(name = 'Hello', parameter=ret[0].parameter, default_encoder_sensitivity=ret[0].default_encoder_sensitivity, fine_grain_encoder_sensitivity=ret[0].fine_grain_encoder_sensitivity)
+        #ret[0] = p
+
+        return ret
+
+    DeviceComponent._get_provided_parameters = _get_provided_parameters
