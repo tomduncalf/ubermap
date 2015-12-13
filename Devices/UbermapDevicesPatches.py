@@ -1,39 +1,25 @@
 # Ubermap imports
 from Ubermap import UbermapDevices
 from Ubermap.UbermapLibs import log
-ubermap = UbermapDevices.UbermapDevices()
 
 # DeviceParameterComponent
-from itertools import chain, repeat, izip_longest
-
-from pushbase import consts
-from pushbase.parameter_provider import ParameterProvider
-
-import Live
-AutomationState = Live.DeviceParameter.AutomationState
-
 from pushbase.device_parameter_component import DeviceParameterComponent
 
 # DeviceParameterBank
-from pushbase import device_parameter_bank
-from pushbase.device_parameter_bank import DeviceParameterBank, DescribedDeviceParameterBank, create_device_bank
+from pushbase.device_parameter_bank import DeviceParameterBank
 
 # BankingUtil
-#from pushbase.banking_util import BankingInfo
 from pushbase import banking_util
 
-# Others
+# DeviceComponent
 from pushbase.device_component import DeviceComponent
-from pushbase.parameter_provider import ParameterInfo, generate_info
+from pushbase.parameter_provider import generate_info
 
-from ableton.v2.base.collection import IndexedDict
-
-# Devices
-from _Generic import Devices
-
-# Looking inside things
+# Logging
 import inspect
-import types
+
+# Create singleton UbermapDevices instance
+ubermap = UbermapDevices.UbermapDevices()
 
 # "Monkey patch" Live methods to do fun things without having to mess with the original functionality :)
 def apply_ubermap_patches():
@@ -46,14 +32,12 @@ def apply_ubermap_patches():
 
 def apply_log_method_patches():
     # Log any method calls made to the object - useful for tracing execution flow
+    # Use like: DeviceComponent.__getattribute__ = __getattribute__
     def __getattribute__(self, name):
         returned = object.__getattribute__(self, name)
         if inspect.isfunction(returned) or inspect.ismethod(returned):
             log.info('Called ' + self.__class__.__name__ + '::' + str(returned.__name__))
         return returned
-
-    #DeviceComponent.__getattribute__ = __getattribute__
-    #DeviceParameterBank.__getattribute__ = __getattribute__
 
 def apply_banking_util_patches():
     # device_bank_names - return ubermap bank names if defined, otherwise use the default
@@ -91,7 +75,6 @@ def apply_device_component_patches():
         if ubermap_params:
             param_bank = ubermap_params[self._get_bank_index()]
             param_info = map(lambda param: generate_info(param, param.custom_name), param_bank)
-            #log.info('Params for bank ' + str(self._get_bank_index()) + ': ' + str(param_info))
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)
