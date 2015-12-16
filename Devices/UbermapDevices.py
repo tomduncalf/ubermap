@@ -32,6 +32,9 @@ class UbermapDevices:
         return config.get_config_path(name, 'Devices')
 
     def dump_device(self, device):
+        if not device:
+            return
+
         filepath = self.get_device_filename(device)
         if(self.get_device_config(device) or os.path.isfile(filepath)):
             log.debug('not dumping device: ' + self.get_device_name(device))
