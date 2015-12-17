@@ -16,15 +16,18 @@ class UbermapDevices:
         log.info('UbermapDevices ready')
 
     def get_device_name(self, device):
+        log.debug('get_device_name ' + str(device))
         if not device:
             return ''
 
         name = device.class_display_name
+        log.debug('get_device_name got name: ' + name)
         if self.cfg.get('use_md5'):
             params = ''
             for i in device.parameters[1:]:
                 params += i.original_name
             name += '_' + hashlib.md5(params).hexdigest()
+        log.debug('get_device_name final name: ' + name)
         return name
 
     def get_device_filename(self, device):
@@ -32,6 +35,7 @@ class UbermapDevices:
         return config.get_config_path(name, 'Devices')
 
     def dump_device(self, device):
+        log.debug('dump_device: ' + str(device))
         if not device:
             return
 
@@ -86,37 +90,50 @@ class UbermapDevices:
         log.info('dumped device: ' + self.get_device_name(device))
 
     def get_device_config(self, device):
+        log.debug('get_device_config: ' + str(device))
         cfg = config.load(self.get_device_name(device), 'Devices')
         if not cfg:
             return False
+        log.debug('get_device_config: got config ' + str(cfg))
         return cfg if cfg.get('Config', 'Ignore') == 'False' else False
 
 
     def get_custom_device_banks(self, device):
+        log.debug('get_custom_device_banks: ' + str(device))
         device_config = self.get_device_config(device)
         if(not device_config):
             return False
 
+        log.debug('get_custom_device_banks got device_config: ' + str(device_config))
         return device_config.get(self.SECTION_BANKS).keys()
 
     def get_custom_device_params(self, device, bank_name = None):
+        log.debug('get_custom_device_params: ' + str(device) + ', ' + str(bank_name))
         if not bank_name:
             bank_name = self.SECTION_BANKS
 
         device_config = self.get_device_config(device)
+        log.debug('get_custom_device_params device_config: ' + str(device_config))
         if(not device_config):
             return False
 
         def get_parameter_by_name(device, nameMapping):
+            log.debug('get_custom_device_params get_parameter_by_name: ' + str(device) + ', ' + str(nameMapping))
             count = 0
+            log.debug('get_custom_device_params device.parameters: ' + str(device.parameters))
             for i in device.parameters:
+                log.debug('get_custom_device_params get_parameter_by_name i: ' + str(i))
                 if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
                     i.custom_name = nameMapping[1]
+                    log.debug('get_custom_device_params get_parameter_by_name return: ' + str(i))
                     return i
                 count = count + 1
 
         def names_to_params(bank):
-            return map(partial(get_parameter_by_name, device), bank.items())
+            ret = map(partial(get_parameter_by_name, device), bank.items())
+            log.debug('get_custom_device_params names_to_params: ' + str(bank) + ', ' + str(ret))
+            return ret
 
         ret = map(names_to_params, device_config.get(bank_name).values())
+        log.debug('get_custom_device_params returning: ' + str(ret))
         return ret
