@@ -17,7 +17,7 @@ from pushbase import banking_util
 
 # DeviceComponent
 from pushbase.device_component import DeviceComponent
-from pushbase.parameter_provider import generate_info
+from pushbase.parameter_provider import ParameterInfo
 
 # Logging
 import inspect
@@ -73,11 +73,11 @@ def apply_device_component_patches():
     _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
 
     def _get_provided_parameters(self):
-        ubermap_params = ubermap.get_custom_device_params(self._device)
+        ubermap_params = ubermap.get_custom_device_params(self._decorated_device)
 
         if ubermap_params:
             param_bank = ubermap_params[self._get_bank_index()]
-            param_info = map(lambda param: generate_info(param, param.custom_name), param_bank)
+            param_info = map(lambda param: ParamterInfo(parameter=param, name=param.custom_name), param_bank)
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)
@@ -93,7 +93,7 @@ def apply_device_parameter_bank_patches():
     _collect_parameters_orig = DeviceParameterBank._collect_parameters
 
     def _collect_parameters(self):
-        ubermap_banks = ubermap.get_custom_device_banks(self._device)
+        ubermap_banks = ubermap.get_custom_device_banks(self._decorated_device)
         if ubermap_banks:
             bank = ubermap_banks[self._get_index()]
             return bank
