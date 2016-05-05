@@ -76,8 +76,9 @@ def apply_device_component_patches():
         ubermap_params = ubermap.get_custom_device_params(self._decorated_device)
 
         if ubermap_params:
-            param_bank = ubermap_params[self._get_bank_index()]
-            param_info = map(lambda param: ParamterInfo(parameter=param, name=param.custom_name), param_bank)
+            param_bank = ubermap_params[self._bank.index]
+            #param_info = map(lambda param: ParameterInfo(parameter=param, name=param.custom_name), param_bank)
+            param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter)), param_bank)
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)
@@ -93,7 +94,7 @@ def apply_device_parameter_bank_patches():
     _collect_parameters_orig = DeviceParameterBank._collect_parameters
 
     def _collect_parameters(self):
-        ubermap_banks = ubermap.get_custom_device_banks(self._decorated_device)
+        ubermap_banks = ubermap.get_custom_device_banks(self._device)
         if ubermap_banks:
             bank = ubermap_banks[self._get_index()]
             return bank
