@@ -1,4 +1,4 @@
-# Ubermap v0.1 alpha
+# Ubermap v0.4b1
 
 ## Introduction
 
@@ -25,7 +25,7 @@ This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 Int
 
 ## Compatibility
 
-Ubermap requires Ableton Live 9.5.1beta4 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself.
+Ubermap requires Ableton Live 9.6.2b1, Push 2 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself. It may or may not work with Push 1, I had to sell mine to get Push 2 but I will try and support it where possible!
 
 ## Installation
 
