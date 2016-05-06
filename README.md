@@ -1,4 +1,4 @@
-# Ubermap v0.4b1
+# Ubermap v0.4b1 ![https://www.paypal.me/tomduncalf/10](https://camo.githubusercontent.com/8dcca6a994a845645fae848872dca53ee7aa10b2/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f70617970616c2d646f6e6174652d79656c6c6f77677265656e2e737667)
 
 ## Introduction
 
