@@ -8,7 +8,6 @@ from Ubermap.UbermapLibs import log, config
 
 # DeviceParameterComponent
 from pushbase.device_parameter_component import DeviceParameterComponent
-from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
 
 # DeviceParameterBank
 from pushbase.device_parameter_bank import DeviceParameterBank
@@ -85,6 +84,7 @@ def apply_device_component_patches():
             param_bank = ubermap_params[self._bank.index]
 
             if is_v1():
+                from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
                 param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter)), param_bank)
             else:
                 param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter)), param_bank)
