@@ -36,6 +36,7 @@ cp_if_ne ../Config/global.cfg ~/Ubermap/
 # Remove .pyc
 rm "$LIVE_MIDI_REMOTE_PATH/Ubermap/*.pyc"
 rm "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc"
+rm "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc"
 
 echo "Ubermap installed - now restart Ableton Live."
 

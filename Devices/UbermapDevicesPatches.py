@@ -4,10 +4,11 @@
 
 # Ubermap imports
 from Ubermap import UbermapDevices
-from Ubermap.UbermapLibs import log
+from Ubermap.UbermapLibs import log, config
 
 # DeviceParameterComponent
 from pushbase.device_parameter_component import DeviceParameterComponent
+from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
 
 # DeviceParameterBank
 from pushbase.device_parameter_bank import DeviceParameterBank
@@ -24,6 +25,11 @@ import inspect
 
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
+ubermap_config = config.load('global')
+push_version = ubermap_config.get('Push', 'Version')
+
+def is_v1():
+    return push_version == '1'
 
 def apply_ubermap_patches():
     log.info("Applying UbermapDevices patches")
@@ -77,8 +83,11 @@ def apply_device_component_patches():
 
         if ubermap_params:
             param_bank = ubermap_params[self._bank.index]
-            #param_info = map(lambda param: ParameterInfo(parameter=param, name=param.custom_name), param_bank)
-            param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter)), param_bank)
+
+            if is_v1():
+                param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter)), param_bank)
+            else:
+                param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter)), param_bank)
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)
