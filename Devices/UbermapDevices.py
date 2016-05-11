@@ -49,23 +49,6 @@ class UbermapDevices:
         config[self.SECTION_CONFIG]['Cache']  = False
         config[self.SECTION_CONFIG]['Ignore'] = True
 
-        '''
-        Code to dump original ableton mapping - not working
-
-        bank_names = parameter_bank_names(device, skip = True)
-        banks = parameter_banks(device, skip = True)
-
-        count = 0
-        for bank_name in bank_names:
-            config[SECTION_BANKS][bank_name] = {}
-            for param in banks[count]:
-                if(param):
-                    config[SECTION_BANKS][bank_name][param.original_name] = param.original_name
-            count = count + 1
-        #config[SECTION_BEST_OF]['Bank']  = best_of_parameter_bank(device, _ubermap_skip = True)
-        config[SECTION_BEST_OF]['Bank']  = config[SECTION_BANKS].itervalues().next()
-        '''
-
         count = 0
         bank = 1
         total_count = 1
@@ -95,6 +78,7 @@ class UbermapDevices:
     def get_custom_device_banks(self, device):
         device_config = self.get_device_config(device)
         if(not device_config):
+            self.dump_device(device)
             return False
 
         return device_config.get(self.SECTION_BANKS).keys()
