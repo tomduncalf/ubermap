@@ -2,30 +2,10 @@
 # Applies "monkey patches" to methods within Live's Push implementation to support custom parameter mapping
 # https://github.com/tomduncalf/ubermap
 
-# Ubermap imports
+# Ubermap
 from Ubermap import UbermapDevices
 from Ubermap.UbermapLibs import log, config
-
-# DeviceParameterComponent
-from pushbase.device_parameter_component import DeviceParameterComponent
-
-# DeviceParameterBank
-from pushbase.device_parameter_bank import DeviceParameterBank
-
-# BankingUtil
-from pushbase import banking_util
-
-# DeviceComponent
-from pushbase.device_component import DeviceComponent
-from pushbase.parameter_provider import ParameterInfo
-
-# Logging
 import inspect
-
-# Create singleton UbermapDevices instance
-ubermap = UbermapDevices.UbermapDevices()
-ubermap_config = config.load('global')
-push_version = ubermap_config.get('Push', 'Version')
 
 def is_v1():
     return push_version == '1'
@@ -37,6 +17,12 @@ def apply_ubermap_patches():
     apply_banking_util_patches()
     apply_device_component_patches()
     apply_device_parameter_bank_patches()
+    apply_device_parameter_adapater_patches()
+
+# Create singleton UbermapDevices instance
+ubermap = UbermapDevices.UbermapDevices()
+ubermap_config = config.load('global')
+push_version = ubermap_config.get('Push', 'Version')
 
 def apply_log_method_patches():
     # Log any method calls made to the object - useful for tracing execution flow
@@ -46,6 +32,11 @@ def apply_log_method_patches():
         if inspect.isfunction(returned) or inspect.ismethod(returned):
             log.info('Called ' + self.__class__.__name__ + '::' + str(returned.__name__))
         return returned
+
+############################################################################################################
+
+# BankingUtil
+from pushbase import banking_util
 
 def apply_banking_util_patches():
     # device_bank_names - return Ubermap bank names if defined, otherwise use the default
@@ -73,6 +64,35 @@ def apply_banking_util_patches():
 
     banking_util.device_bank_count = device_bank_count
 
+############################################################################################################
+
+# DeviceParameterBank
+from pushbase.device_parameter_bank import DeviceParameterBank
+
+def apply_device_parameter_bank_patches():
+    # _collect_parameters - this method is called by _update_parameters to determine whether we should
+    # notify that parameters have been updated or not, but is hardcoded to use the default bank size
+    # (i.e. full banks of 8), so Ubermap banks with <8 parameters cause later banks to break. Instead return
+    # the relevant Ubermap bank if defined, otherwise use the default.
+    _collect_parameters_orig = DeviceParameterBank._collect_parameters
+
+    def _collect_parameters(self):
+        ubermap_banks = ubermap.get_custom_device_banks(self._device)
+        if ubermap_banks:
+            bank = ubermap_banks[self._get_index()]
+            return bank
+
+        orig = _collect_parameters_orig(self)
+        return orig
+
+    DeviceParameterBank._collect_parameters = _collect_parameters
+
+############################################################################################################
+
+# DeviceComponent
+from pushbase.device_component import DeviceComponent
+from pushbase.parameter_provider import ParameterInfo
+
 def apply_device_component_patches():
     # _get_provided_parameters - return Ubermap parameter names if defined, otherwise use the default
     _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
@@ -95,20 +115,17 @@ def apply_device_component_patches():
 
     DeviceComponent._get_provided_parameters = _get_provided_parameters
 
-def apply_device_parameter_bank_patches():
-    # _collect_parameters - this method is called by _update_parameters to determine whether we should
-    # notify that parameters have been updated or not, but is hardcoded to use the default bank size
-    # (i.e. full banks of 8), so Ubermap banks with <8 parameters cause later banks to break. Instead return
-    # the relevant Ubermap bank if defined, otherwise use the default.
-    _collect_parameters_orig = DeviceParameterBank._collect_parameters
+############################################################################################################
 
-    def _collect_parameters(self):
-        ubermap_banks = ubermap.get_custom_device_banks(self._device)
-        if ubermap_banks:
-            bank = ubermap_banks[self._get_index()]
-            return bank
+# DeviceParameterAdapter
+from ableton.v2.base import listenable_property
+from Push2.model.repr import DeviceParameterAdapter
 
-        orig = _collect_parameters_orig(self)
-        return orig
+def apply_device_parameter_adapater_patches():
+    def name(self):
+        if hasattr(self._adaptee, 'custom_name'):
+            return self._adaptee.custom_name
+        else:
+            return self._adaptee.name
 
-    DeviceParameterBank._collect_parameters = _collect_parameters
+    DeviceParameterAdapter.name = listenable_property(name)
