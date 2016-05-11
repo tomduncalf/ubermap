@@ -120,6 +120,7 @@ def apply_device_component_patches():
 # DeviceParameterAdapter
 from ableton.v2.base import listenable_property
 from Push2.model.repr import DeviceParameterAdapter
+from math import floor
 
 def apply_device_parameter_adapater_patches():
     def name(self):
@@ -129,3 +130,31 @@ def apply_device_parameter_adapater_patches():
             return self._adaptee.name
 
     DeviceParameterAdapter.name = listenable_property(name)
+
+    def get_custom_parameter_values(device_parameter):
+        if (hasattr(device_parameter, 'custom_parameter_values')):
+            return device_parameter.custom_parameter_values
+        else:
+            return None
+
+    def valueItems(self):
+        if get_custom_parameter_values(self._adaptee):
+            return get_custom_parameter_values(self._adaptee)
+        else:
+            if self._adaptee.is_quantized:
+                return self._adaptee.value_items
+            return []
+
+    DeviceParameterAdapter.valueItems = listenable_property(valueItems)
+
+    def value(self):
+        if get_custom_parameter_values(self._adaptee):
+            values_len = len(get_custom_parameter_values(self._adaptee))
+            value_index = floor(self._adaptee.value * values_len)
+
+            # If the value is 1.00 we don't want an off by one error
+            return value_index - 1 if value_index == values_len else value_index
+        else:
+            return self._adaptee.value
+
+    DeviceParameterAdapter.value = listenable_property(value)

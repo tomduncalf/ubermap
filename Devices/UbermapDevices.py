@@ -91,11 +91,15 @@ class UbermapDevices:
         if(not device_config):
             return False
 
+        def get_custom_parameter_values(parameter_name):
+            return device_config.get('ParameterValues', parameter_name)
+
         def get_parameter_by_name(device, nameMapping):
             count = 0
             for i in device.parameters:
                 if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
                     i.custom_name = nameMapping[1]
+                    i.custom_parameter_values = get_custom_parameter_values(nameMapping[0])
                     return i
                 count = count + 1
 
