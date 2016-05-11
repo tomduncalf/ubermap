@@ -30,16 +30,16 @@ To install the script manually (or on Windows - please note this has not been te
 2. Create a new directory called Ubermap inside your Live "MIDI Remote Scripts" folder
 3. Copy all the files from the unzipped Common folder (where you unzipped Ubermap) into the Ubermap folder you crated in step 2
 4. Copy UbermapDevices.py and UbermapDevicesPatches.py from the unzipped Devices folder into the Ubermap folder you created in step 2
-5. If you are using Push 1, copy __init__.py from the unzipped Push folder into the Push folder inside your Live "MIDI Remote Scripts" folder
-6. If you are using Push 2, copy __init__.py from the unzipped Push2 folder into the Push2 folder inside your Live "MIDI Remote Scripts" folder
+5. If you are using Push 1, copy `__init__.py` from the unzipped Push folder into the Push folder inside your Live "MIDI Remote Scripts" folder
+6. If you are using Push 2, copy `__init__.py` from the unzipped Push2 folder into the Push2 folder inside your Live "MIDI Remote Scripts" folder
 7. Delete or rename (for backup purposes) the following files in the Live "MIDI Remote Scripts" folder to make Live read the new Python files:
   - *.pyc inside the Ubermap folder (will only exist if you are upgrading)
-  - If using Push 1, __init__.pyc inside the Push folder
-  - If using Push 2, __init__.pyc inside the Push2 folder
-8. Create a folder called Ubermap in your user folder (e.g. C:\Users\Tom\Ubermap)
-9. Create a folder called Devices inside this Ubermap folder (e.g. C:\Users\Tom\Ubermap\Devices)
+  - If using Push 1, `__init__.pyc` inside the Push folder
+  - If using Push 2, `__init__.pyc` inside the Push2 folder
+8. Create a folder called Ubermap in your user folder (e.g. `C:\Users\Tom\Ubermap`)
+9. Create a folder called Devices inside this Ubermap folder (e.g. `C:\Users\Tom\Ubermap\Devices`)
 10. Copy all the files from the unzipped Config folder into the Ubermap folder you created in step 8
-11. Create an Options.txt as described above (not sure where this should live on Windows)
+11. Create an `Options.txt` as described above (not sure where this should live on Windows)
 12. (Re)start Live
 
 ## Summary
