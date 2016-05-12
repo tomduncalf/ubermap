@@ -92,7 +92,18 @@ class UbermapDevices:
             return False
 
         def get_custom_parameter_values(parameter_name):
-            return device_config.get('ParameterValues', parameter_name)
+            values = device_config.get('ParameterValues', parameter_name)
+            if not values:
+                return None
+
+            # If we have an array, i.e. comma separated list, just use that
+            if isinstance(values, list):
+                return values
+
+            # Otherwise try and look up the string key in ParameterValueTypes and use that
+            values_type = device_config.get('ParameterValueTypes', values)
+            if values_type:
+                return values_type
 
         def get_parameter_by_name(device, nameMapping):
             count = 0

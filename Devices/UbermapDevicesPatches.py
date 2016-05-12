@@ -153,7 +153,11 @@ def apply_device_parameter_adapater_patches():
             value_index = floor(self._adaptee.value * values_len)
 
             # If the value is 1.00 we don't want an off by one error
-            return value_index - 1 if value_index == values_len else value_index
+            value_index = value_index - 1 if value_index == values_len else value_index
+
+            log.debug("Input value: " + str(self._adaptee.value) + ", output index: " + str(value_index))
+
+            return value_index
         else:
             return self._adaptee.value
 
