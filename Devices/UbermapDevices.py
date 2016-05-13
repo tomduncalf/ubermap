@@ -6,7 +6,9 @@ from Ubermap.UbermapLibs import log, log_call, config
 
 class UbermapDevices:
     PARAMS_PER_BANK = 8
-    SECTION_BANKS   = 'Banks'
+    SECTION_BANKS = 'Banks'
+    SECTION_PARAMETER_VALUES = 'ParameterValues'
+    SECTION_PARAMETER_VALUE_TYPES = 'ParameterValueTypes'
     SECTION_CONFIG  = 'Config'
 
     device_config_cache = {}
@@ -44,8 +46,11 @@ class UbermapDevices:
         config = ConfigObj()
         config.filename = filepath
 
-        config[self.SECTION_BANKS]   = {}
-        config[self.SECTION_CONFIG]  = {}
+        config[self.SECTION_BANKS] = {}
+        config[self.SECTION_PARAMETER_VALUES] = {}
+        config[self.SECTION_PARAMETER_VALUE_TYPES] = {}
+
+        config[self.SECTION_CONFIG] = {}
         config[self.SECTION_CONFIG]['Cache']  = False
         config[self.SECTION_CONFIG]['Ignore'] = True
 
@@ -91,26 +96,37 @@ class UbermapDevices:
         if(not device_config):
             return False
 
+        def parse_custom_parameter_values(values):
+            # Split the values on || to see if we have custom value start points specified
+            values_split = map(lambda s: s.split('||'), values)
+            has_value_start_points = all(len(x) == 2 for x in values_split)
+            if not has_value_start_points:
+                return [values, None]
+
+            return [[x[0] for x in values_split], [float(x[1]) for x in values_split]]
+
         def get_custom_parameter_values(parameter_name):
-            values = device_config.get('ParameterValues', parameter_name)
+            values = device_config.get(self.SECTION_PARAMETER_VALUES, parameter_name)
             if not values:
-                return None
+                return [None, None]
 
             # If we have an array, i.e. comma separated list, just use that
             if isinstance(values, list):
-                return values
+                return parse_custom_parameter_values(values)
 
             # Otherwise try and look up the string key in ParameterValueTypes and use that
-            values_type = device_config.get('ParameterValueTypes', values)
+            values_type = device_config.get(self.SECTION_PARAMETER_VALUE_TYPES, values)
             if values_type:
-                return values_type
+                return parse_custom_parameter_values(values_type)
 
         def get_parameter_by_name(device, nameMapping):
             count = 0
             for i in device.parameters:
                 if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
                     i.custom_name = nameMapping[1]
-                    i.custom_parameter_values = get_custom_parameter_values(nameMapping[0])
+
+                    [i.custom_parameter_values, i.custom_parameter_start_points] = get_custom_parameter_values(nameMapping[0])
+
                     return i
                 count = count + 1
 

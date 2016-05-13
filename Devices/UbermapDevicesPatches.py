@@ -131,15 +131,9 @@ def apply_device_parameter_adapater_patches():
 
     DeviceParameterAdapter.name = listenable_property(name)
 
-    def get_custom_parameter_values(device_parameter):
-        if (hasattr(device_parameter, 'custom_parameter_values')):
-            return device_parameter.custom_parameter_values
-        else:
-            return None
-
     def valueItems(self):
-        if get_custom_parameter_values(self._adaptee):
-            return get_custom_parameter_values(self._adaptee)
+        if getattr(self._adaptee, 'custom_parameter_values', None):
+            return self._adaptee.custom_parameter_values
         else:
             if self._adaptee.is_quantized:
                 return self._adaptee.value_items
@@ -147,17 +141,31 @@ def apply_device_parameter_adapater_patches():
 
     DeviceParameterAdapter.valueItems = listenable_property(valueItems)
 
+    def value_to_start_point_index(value, start_points):
+        log.debug("start_points: " + str(start_points) + ", len: " + str(len(start_points)) + ", value: " + str(value))
+        for index, start_point in enumerate(start_points):
+            log.debug("index: " + str(index) + ", start_point: " + str(start_point) + ", value: " + str(value))
+            if value > start_point and (index == len(start_points) - 1 or value < start_points[index + 1]):
+                log.debug("Input value: " + str(value) + ", output index: " + str(index) + " with custom start points")
+                return index
+
+    def value_to_index(value, parameter_values):
+        values_len = len(parameter_values)
+        value_index = floor(value * values_len)
+
+        # If the value is 1.00 we don't want an off by one error
+        value_index = value_index - 1 if value_index == values_len else value_index
+
+        log.debug("Input value: " + str(value) + ", output index: " + str(value_index))
+
+        return value_index
+
     def value(self):
-        if get_custom_parameter_values(self._adaptee):
-            values_len = len(get_custom_parameter_values(self._adaptee))
-            value_index = floor(self._adaptee.value * values_len)
-
-            # If the value is 1.00 we don't want an off by one error
-            value_index = value_index - 1 if value_index == values_len else value_index
-
-            log.debug("Input value: " + str(self._adaptee.value) + ", output index: " + str(value_index))
-
-            return value_index
+        if getattr(self._adaptee, 'custom_parameter_values', None):
+            if getattr(self._adaptee, 'custom_parameter_start_points', None):
+                return value_to_start_point_index(self._adaptee.value, self._adaptee.custom_parameter_start_points)
+            else:
+               return value_to_index(self._adaptee.value, self._adaptee.custom_parameter_values)
         else:
             return self._adaptee.value
 

@@ -1,4 +1,4 @@
-# Ubermap v0.4b1 [![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellowgreen.svg)](https://www.paypal.me/tomduncalf/10)
+# Ubermap v1.0.0b1 [![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellowgreen.svg)](https://www.paypal.me/tomduncalf/10)
 
 ## Introduction
 

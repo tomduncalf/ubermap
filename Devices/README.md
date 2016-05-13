@@ -2,25 +2,23 @@
 
 ## Summary
 
-The Devices component of Ubermap allows asy customisation of device bank and parameter names displayed on Push, for both internal and plugin devices, using simple configuration files for each device.
+The Devices component of Ubermap allows easy customisation of device bank and parameter names displayed on Push for plugin devices, using simple configuration files for each device.
 
 ## Installation
 
-I've made the installation a bit simpler as the script seems to work OK for others but please still make sure you understand what the script is doing and how to use it (and any potential risks associated with doing so), as I can't provide any technical support or be held resposible if anything goes wrong! Make sure you have a backup of anything important :)
+Make sure you have a backup of anything important before starting, as I can't provide any technical support or be held resposible if anything goes wrong!
 
 Note that ~ refers to your user folder (/Users/username).
 
 To install, download the ZIP file from Github (https://github.com/tomduncalf/ubermap/archive/master.zip) and unzip it somewhere. Open the unzipped folder in Finder, go in to the Devices folder, and double click "install.command". This should open up a Terminal window with some install messages, followed by "Ubermap installed - now restart Ableton Live". You can now close/quit the Terminal window.
 
-I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.4.5b4/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
+I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.6.2b1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
 
 At this point you can (re-)start Ableton and the script should be working.
 
 ### Installation Notes
 
-Note that my Devices.py also includes the improved default mappings by TomViolenz and other contributors on the Ableton forum - see https://forum.ableton.com/viewtopic.php?f=55&t=198946&p=1562395#p1562395.
-
-If you want to know what the install script is doing, you can look at install.command in a text editor, or read the manual instructions below - a brief summary: This will copy the appropriate files to "/Applications/Ableton Live 9 Suite.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
+If you want to know what the install script is doing, you can look at install.command in a text editor, or read the manual instructions below - a brief summary: This will copy the appropriate files to "/Applications/Ableton Live 9.6 Beta.app/Contents/App-Resources/MIDI Remote Scripts", creating backups of the original pyc files in case you wish to remove the script - I'd recommend taking a full backup of the MIDI Remote Scripts folder just in case, however - and creates a folder called Ubermap in your user home directory, for device configs.
 
 ## Manual (Windows) Installation
 
@@ -46,7 +44,7 @@ To install the script manually (or on Windows - please note this has not been te
 
 Ubermap works by intercepting the calls from Ableton to retrieve device parameters whenever a device is selected in Push, and first looking for a suitable parameter mapping file in ~/Ubermap/Devices and sending these parameters to Push, before falling back to the default Ableton mapping (as defined in Devices.py) if no enabled custom mapping is found.
 
-This means you can redefine what parameters and parameter banks are shown on Push for any device (internal or AU/VST), including renaming parameters or banks and inserting blank spaces, letting you create a much more intuitive layout for 3rd party plugins in particular. These mappings can be shared with other users by sharing the appropriate .cfg file with them.
+This means you can redefine what parameters and parameter banks are shown on Push for any AU/VST device, including renaming parameters or banks and inserting blank spaces, letting you create a much more intuitive layout for 3rd party plugins. These mappings can be shared with other users by sharing the appropriate .cfg file with them.
 
 To create an initial mapping, we need to know what parameters a device presents to Live - luckily, Ubermap will automatically export a new configuration file for any device it hasn't seen before, containing a list of all the parameters, split into banks of 8, making customisation much easier.
 
@@ -64,13 +62,133 @@ Configuration files are formatted using something resembling the ini file format
     InternalParamName3 = Display Name 3
     "" = ""
     InternalParamName4 = Display Name 4
+
+    [ParameterValues]
+    InternalParamName1 = On, Off
+    InternalParamName2 = Filter
+    InternalParamName3 = Filter
+
+    [ParameterValueTypes]
+    Filter = Off||0, LP||0.25, HP||0.75
+
     [Config]
     Cache = False
     Ignore = False
 
+### Parameter Banks
+
 All visible parameters will by default be exported into the [Banks] section, split into banks of 8. You can then go in and rename banks, move parameters between, rename parameters (changing the part after the "=" to set the display name for a parameter) and insert blank spaces on the display (achieved by adding a line with an empty mapping: "" = "").
 
-Note that in 9.5, it seems that the "Best Of" bank (which used to be the bank shown on Push when you select a device but don't go "in" to view all parameters) has been done away with, and instead the first bank is shown when you select but don't go "in to" a plugin device. To replicate this functionality in 9.5, set your device configuration file up so that the first bank you define has the controllers you want quick access to without going "in" to the device (you could call this bank "Best Of" and replicate the parameters in later banks if you like).
+Note that in 9.5+, it seems that the "Best Of" bank (which used to be the bank shown on Push when you select a device but don't go "in" to view all parameters) has been done away with, and instead the first bank is shown when you select but don't go "in to" a plugin device. To replicate this functionality in 9.5, set your device configuration file up so that the first bank you define has the controllers you want quick access to without going "in" to the device (you could call this bank "Best Of" and replicate the parameters in later banks if you like).
+
+### Parameter Values (Push 2 only)
+
+By default, device parameters are represented by a dial with a value from 0.0 to 1.0, but in reality, many parameters are not contiuous like this, but are instead discrete - for example an effect might be "on" or "off", a filter type might be "LP" or "BP" or "HP", or an oscillator wave might be "Sine", "Saw" or "Sub". Using a discrete parameter like this with a numerical dial is difficult as you would have to either remember that, for example, 0.2 corresponds to "BP", or you have to look at your computer's screen while changing the value. Some plugins can correctly describe their values (e.g. Waves IDR), in which case you see a list of parameters on the Push 2 screen instead of a number, but many do not, so you just see a number instead.
+
+Ubermap 1.0.0 adds the ability to represent these kinds of parameters properly on Push 2 (not supported on Push 1 currently), by describing all the possible values of a parameter (and optionally, what numerical value corresponds to which actual value, if required) in the config file. The parameter is then still controlled with a knob, but rather than displaying a dial, it will display the proper value of the control e.g. "LP".
+
+#### Simple example
+
+This is easiest to explain with an example. Take the following simple device config:
+
+```
+[Banks]
+[[Main]]
+1_Filter Type = Filter Type
+2_Filter Cutoff Frequency = Cutoff
+```
+
+We have two parameters, one of which we have renamed to "Cutoff". Imagine that in our plugin, "cutoff" is a continuous value, so it makes sense to use a knob for it; but "filter type" actually represents a switch with four states: "Off", "LP", "BP", "HP". With this config, you would still see "filter type" as a numerical dial – but as you turn the dial, you can see that a value of 0–0.25 corresponds to "Off", 0.25–0.5 corresponds to "LP", 0.5–0.75 corresponds to "BP" and 0.75–1.0 corresponds to "HP".
+
+We can tell Ubermap that the "filter type" parameter behaves this way like so:
+
+```
+[Banks]
+[[Main]]
+1_Filter Type = Filter Type
+2_Filter Cutoff Frequency = Cutoff
+
+[ParameterValues]
+1_Filter Type = Off, LP, BP, HP
+```
+
+We simply add an entry in the `ParameterValues` section, with the left hand side being the original parameter name as represented by Ubermap, and the right hand side being a comma-separated list of possible values. Ubermap will then automatically distribute those possible values over the range 0.0–1.0 (i.e. 0.0–0.25 = Off, 0.25–0.5 = LP, etc.), and on Push you will see "Off/LP/BP/HP" instead of a dial.
+
+#### Parameters without even distribution
+
+In some cases, you might find that a parameter is not evenly distributed over the range of 0.0–1.0 – for example, imagine that filter type actually responds like so:
+
+* 0.0 – 0.1 = Off
+* 0.1 – 0.4 = LP
+* 0.4 – 0.6 = BP
+* 0.6 – 1.0 = BP
+
+This seems to be quite common in some plugins, so Ubermap provides a way to optionally tell it at which numerical value a given option starts, by using `||` after each possible value to separate the starting point from the name. For this example, we would therefore do:
+
+```
+[Banks]
+[[Main]]
+1_Filter Type = Filter Type
+2_Filter Cutoff Frequency = Cutoff
+
+[ParameterValues]
+1_Filter Type = Off||0.0, LP||0.1, BP||0.4, HP||0.6
+```
+
+You can think of the `||` as saying "this parameter starts at", so for example, "Off" starts at 0.0, "LP" starts at 0.1, "BP" starts at 0.4 etc. To determine which numerical values correspond to which actual value, it's easiest to sweep the numerical dial and make a note of the value at each point that it changes – usually these correspond to regular intervals such as 1/3, 1/4, 1/8, but it's up to the plugin developer so there might be some weird ones!
+
+#### Parameter value types
+
+Imagine that our plugin actually has three identical filters, so the basic config actually looks like:
+
+```
+[Banks]
+[[Main]]
+1_Filter 1 Type = Filter 1 Type
+2_Filter 1 Cutoff Frequency = Cutoff 1
+3_Filter 2 Type = Filter 2 Type
+4_Filter 2 Cutoff Frequency = Cutoff 3
+5_Filter 3 Type = Filter 3 Type
+6_Filter 3 Cutoff Frequency = Cutoff 3
+```
+
+We could just create a `ParameterValues` entry for each filter with an identical mapping like so:
+
+```
+[ParameterValues]
+1_Filter 1 Type = Off||0.0, LP||0.1, BP||0.4, HP||0.6
+3_Filter 2 Type = Off||0.0, LP||0.1, BP||0.4, HP||0.6
+5_Filter 3 Type = Off||0.0, LP||0.1, BP||0.4, HP||0.6
+```
+
+However, it's useful to avoid duplication in configurations where possible. Instead, Ubermap lets us define a parameter value type in the `ParameterValueTypes` section, which describes how a certain type of parameter maps to actual values, and then we just say which parameters have that type. In this way, our final configuration without the duplication looks like:
+
+```
+[Banks]
+[[Main]]
+1_Filter 1 Type = Filter 1 Type
+2_Filter 1 Cutoff Frequency = Cutoff 1
+3_Filter 2 Type = Filter 2 Type
+4_Filter 2 Cutoff Frequency = Cutoff 3
+5_Filter 3 Type = Filter 3 Type
+6_Filter 3 Cutoff Frequency = Cutoff 3
+
+[ParameterValues]
+1_Filter 1 Type = Filter
+3_Filter 2 Type = Filter
+5_Filter 3 Type = Filter
+
+[ParameterValueTypes]
+Filter = Off||0.0, LP||0.1, BP||0.4, HP||0.6
+```
+
+So here, we have defined a type called "Filter", which has the mapping for a filter knob, and then we just say that each of the filter type parameters is of type "Filter".
+
+#### Examples
+
+There are example configurations for D16 Devastor and TAL U-No-LX 2 included with Ubermap which make use of parameter values, so you can use these as a basis for other configurations.
+
+### Config
 
 The [Config] section is for Ubermap config - for now, the "Cache" parameter doesn't do anything (this will probably be removed, as all config files are now cached based on modified time, so any changes you make are reflected as soon as you save the file and reselect the device on Push).
 
@@ -104,6 +222,7 @@ Included example device mappings are:
 - Maradona Labs Aalto (unfinished mapping)
 - ML-185 step sequencer (Max MIDI Effect_86742a9aa7c78617f94e80f3ce65d488.cfg)
 - NI Monark (Reaktor5_9c1425c4d9e6878ca148439e91cd63a6.cfg)
+- TAL U-No-LX 2
 
 If they don't work, you might have a different set of parameters exposed and therefore a different hash (see below) to me, in which case you can try just copying the contents of the example into your generated config file (see below again).
 
