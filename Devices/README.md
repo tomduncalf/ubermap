@@ -4,6 +4,8 @@
 
 The Devices component of Ubermap allows easy customisation of device bank and parameter names displayed on Push for plugin devices, using simple configuration files for each device.
 
+<img src="http://s32.postimg.org/osqe9c2dh/Screen_Shot_2016_05_05_at_21_43_23.png"/>
+
 ## Installation
 
 Make sure you have a backup of anything important before starting, as I can't provide any technical support or be held resposible if anything goes wrong!
@@ -86,6 +88,8 @@ Note that in 9.5+, it seems that the "Best Of" bank (which used to be the bank s
 By default, device parameters are represented by a dial with a value from 0.0 to 1.0, but in reality, many parameters are not contiuous like this, but are instead discrete - for example an effect might be "on" or "off", a filter type might be "LP" or "BP" or "HP", or an oscillator wave might be "Sine", "Saw" or "Sub". Using a discrete parameter like this with a numerical dial is difficult as you would have to either remember that, for example, 0.2 corresponds to "BP", or you have to look at your computer's screen while changing the value. Some plugins can correctly describe their values (e.g. Waves IDR), in which case you see a list of parameters on the Push 2 screen instead of a number, but many do not, so you just see a number instead.
 
 Ubermap 1.0.0 adds the ability to represent these kinds of parameters properly on Push 2 (not supported on Push 1 currently), by describing all the possible values of a parameter (and optionally, what numerical value corresponds to which actual value, if required) in the config file. The parameter is then still controlled with a knob, but rather than displaying a dial, it will display the proper value of the control e.g. "LP".
+
+<img src="http://s32.postimg.org/t9x4tp7ut/image1.jpg" />
 
 #### Simple example
 
