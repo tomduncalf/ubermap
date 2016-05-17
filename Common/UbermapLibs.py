@@ -80,9 +80,9 @@ class UbermapConfig:
                 self._config_cache[name] = {}
                 self._config_cache[name]['mtime'] = mtime
                 self._config_cache[name]['config'] = config
-            except:
+            except Exception as e:
                 if log_enabled:
-                    log.error('error parsing config: ' + path)
+                    log.error('error parsing config: ' + path + " " + str(e))
                 return False
 
         return UbermapConfigProxy(self, name, subdir, log_enabled)

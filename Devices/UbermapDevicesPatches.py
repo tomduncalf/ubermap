@@ -97,17 +97,22 @@ def apply_device_component_patches():
     # _get_provided_parameters - return Ubermap parameter names if defined, otherwise use the default
     _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
 
+    def _get_parameter_info(self, parameter):
+        if not parameter:
+            return None
+
+        if is_v1():
+            from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
+            return ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter))
+        else:
+            return ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter))
+
     def _get_provided_parameters(self):
         ubermap_params = ubermap.get_custom_device_params(self._decorated_device)
 
         if ubermap_params:
             param_bank = ubermap_params[self._bank.index]
-
-            if is_v1():
-                from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
-                param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter)), param_bank)
-            else:
-                param_info = map(lambda parameter: ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter)), param_bank)
+            param_info = map(lambda parameter: _get_parameter_info(self, parameter), param_bank)
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)

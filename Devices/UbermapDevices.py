@@ -123,6 +123,7 @@ class UbermapDevices:
             count = 0
             for i in device.parameters:
                 if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
+                    log.info("got " + nameMapping[1] + " for " + nameMapping[0])
                     i.custom_name = nameMapping[1]
 
                     [i.custom_parameter_values, i.custom_parameter_start_points] = get_custom_parameter_values(nameMapping[0])

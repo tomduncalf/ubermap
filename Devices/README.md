@@ -16,6 +16,10 @@ To install, download the ZIP file from Github (https://github.com/tomduncalf/ube
 
 I also recommend creating an Options.txt file for Live to set it to always auto populate plugin parameters regardless of the number, see below for further explanation - to do this, copy the included Options.txt file to ~/Library/Preferences/Ableton/Live 9.6.2b1/, or edit your existing file and add the line "-_PluginAutoPopulateThreshold=-1".
 
+### Push 1 users
+
+If you are a Push 1 user, you need to update the Ubermap config to specify that you are using Push 1. Open "<your user directory>/Ubermap/global.cfg" and change "Version = 2" under "[Push]" to "Version = 1".
+
 At this point you can (re-)start Ableton and the script should be working.
 
 ### Installation Notes
@@ -62,7 +66,8 @@ Configuration files are formatted using something resembling the ini file format
     InternalParamName2 = Display Name 2
     [[Bank Name 2]]
     InternalParamName3 = Display Name 3
-    "" = ""
+    _blank_0 = ""
+    _blank_1 = ""
     InternalParamName4 = Display Name 4
 
     [ParameterValues]
@@ -79,7 +84,7 @@ Configuration files are formatted using something resembling the ini file format
 
 ### Parameter Banks
 
-All visible parameters will by default be exported into the [Banks] section, split into banks of 8. You can then go in and rename banks, move parameters between, rename parameters (changing the part after the "=" to set the display name for a parameter) and insert blank spaces on the display (achieved by adding a line with an empty mapping: "" = "").
+All visible parameters will by default be exported into the [Banks] section, split into banks of 8. You can then go in and rename banks, move parameters between, rename parameters (changing the part after the "=" to set the display name for a parameter) and insert blank spaces on the display (achieved by adding a line with an empty mapping: `_blank_0 = ""` – note that the same key (left hand name) cannot occur twice in a section, so you need to use e.g. `_blank_1`, `_blank_2`, if you want multiple blank spaces within a single bank).
 
 Note that in 9.5+, it seems that the "Best Of" bank (which used to be the bank shown on Push when you select a device but don't go "in" to view all parameters) has been done away with, and instead the first bank is shown when you select but don't go "in to" a plugin device. To replicate this functionality in 9.5, set your device configuration file up so that the first bank you define has the controllers you want quick access to without going "in" to the device (you could call this bank "Best Of" and replicate the parameters in later banks if you like).
 
