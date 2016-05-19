@@ -2,7 +2,6 @@
 from __future__ import absolute_import, print_function
 from ableton.v2.control_surface.capabilities import controller_id, inport, outport, AUTO_LOAD_KEY, CONTROLLER_ID_KEY, FIRMWARE_KEY, HIDDEN, NOTES_CC, PORTS_KEY, SCRIPT, SYNC, TYPE_KEY
 from .firmware_handling import get_provided_firmware_version
-from .push import Push
 
 from Ubermap import UbermapDevicesPatches
 
@@ -23,5 +22,7 @@ def create_instance(c_instance):
     """ Creates and returns the Push script """
 
     UbermapDevicesPatches.apply_ubermap_patches()
+
+    from .push import Push
 
     return Push(c_instance=c_instance)

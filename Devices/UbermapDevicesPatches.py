@@ -18,6 +18,7 @@ def apply_ubermap_patches():
     apply_device_component_patches()
     apply_device_parameter_bank_patches()
     apply_device_parameter_adapater_patches()
+    apply_options_patches()
 
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
@@ -90,10 +91,13 @@ def apply_device_parameter_bank_patches():
 ############################################################################################################
 
 # DeviceComponent
-from pushbase.device_component import DeviceComponent
-from pushbase.parameter_provider import ParameterInfo
-
 def apply_device_component_patches():
+    from pushbase.device_component import DeviceComponent
+    from pushbase.parameter_provider import ParameterInfo
+
+    if is_v1():
+        from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
+
     # _get_provided_parameters - return Ubermap parameter names if defined, otherwise use the default
     _get_provided_parameters_orig = DeviceComponent._get_provided_parameters
 
@@ -102,7 +106,6 @@ def apply_device_component_patches():
             return None
 
         if is_v1():
-            from Push.parameter_mapping_sensitivities import parameter_mapping_sensitivity, fine_grain_parameter_mapping_sensitivity
             return ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=parameter_mapping_sensitivity(parameter), fine_grain_encoder_sensitivity=fine_grain_parameter_mapping_sensitivity(parameter))
         else:
             return ParameterInfo(parameter=parameter, name=parameter.custom_name, default_encoder_sensitivity=self.default_sensitivity(parameter), fine_grain_encoder_sensitivity=self.fine_sensitivity(parameter))
@@ -175,3 +178,44 @@ def apply_device_parameter_adapater_patches():
             return self._adaptee.value
 
     DeviceParameterAdapter.value = listenable_property(value)
+
+############################################################################################################
+
+# Options
+
+def apply_options_patches():
+    from Push2.device_options import DeviceOnOffOption
+    from Push2.device_parameter_bank_with_options import DescribedDeviceParameterBankWithOptions, create_device_bank_with_options
+    from Push2.device_component import DeviceComponent
+
+    _setup_bank_orig = DeviceComponent._setup_bank
+
+    def ubermap_create_device_bank_with_options(device, banking_info):
+        bank = DescribedDeviceParameterBankWithOptions(device=device, size=8, banking_info=banking_info)
+        return bank
+
+    def _setup_bank(self, device):
+        #return _setup_bank_orig(self, device, bank_factory)
+        #_setup_bank_orig(self, device)
+        #log.info(str(self._bank))
+
+        super(DeviceComponent, self)._setup_bank(device, bank_factory=ubermap_create_device_bank_with_options)
+        try:
+            self.__on_options_changed.subject = self._bank
+        except SlotError:
+            pass
+
+    DeviceComponent._setup_bank = _setup_bank
+
+    _collect_options_orig = DescribedDeviceParameterBankWithOptions._collect_options
+
+    def _collect_options(self):
+        #ret = _collect_options_orig(self)
+        #log.info(str(ret))
+        #return ret
+        log.info(str(self._parameters[0]))
+        log.info(str(self._parameters[0].property_host))
+
+        #return [DeviceOnOffOption('Hello')]
+
+    DescribedDeviceParameterBankWithOptions._collect_options = _collect_options
