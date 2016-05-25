@@ -14,10 +14,10 @@ def apply_ubermap_patches():
     log.info("Applying UbermapDevices patches")
 
     apply_log_method_patches()
-    apply_banking_util_patches()
-    apply_device_component_patches()
-    apply_device_parameter_bank_patches()
-    apply_device_parameter_adapater_patches()
+    # apply_banking_util_patches()
+    # apply_device_component_patches()
+    # apply_device_parameter_bank_patches()
+    # apply_device_parameter_adapater_patches()
     apply_options_patches()
 
 # Create singleton UbermapDevices instance
@@ -37,9 +37,10 @@ def apply_log_method_patches():
 ############################################################################################################
 
 # BankingUtil
-from pushbase import banking_util
 
 def apply_banking_util_patches():
+    from pushbase import banking_util
+
     # device_bank_names - return Ubermap bank names if defined, otherwise use the default
     device_bank_names_orig = banking_util.device_bank_names
 
@@ -68,9 +69,10 @@ def apply_banking_util_patches():
 ############################################################################################################
 
 # DeviceParameterBank
-from pushbase.device_parameter_bank import DeviceParameterBank
 
 def apply_device_parameter_bank_patches():
+    from pushbase.device_parameter_bank import DeviceParameterBank
+
     # _collect_parameters - this method is called by _update_parameters to determine whether we should
     # notify that parameters have been updated or not, but is hardcoded to use the default bank size
     # (i.e. full banks of 8), so Ubermap banks with <8 parameters cause later banks to break. Instead return
@@ -126,11 +128,12 @@ def apply_device_component_patches():
 ############################################################################################################
 
 # DeviceParameterAdapter
-from ableton.v2.base import listenable_property
-from Push2.model.repr import DeviceParameterAdapter
-from math import floor
 
 def apply_device_parameter_adapater_patches():
+    from ableton.v2.base import listenable_property
+    from Push2.model.repr import DeviceParameterAdapter
+    from math import floor
+
     def name(self):
         if hasattr(self._adaptee, 'custom_name'):
             return self._adaptee.custom_name
@@ -186,7 +189,45 @@ def apply_device_parameter_adapater_patches():
 def apply_options_patches():
     from Push2.device_options import DeviceOnOffOption
     from Push2.device_parameter_bank_with_options import DescribedDeviceParameterBankWithOptions, create_device_bank_with_options
+    from pushbase.device_parameter_bank import DescribedDeviceParameterBank
     from Push2.device_component import DeviceComponent
+    from Push2.custom_bank_definitions import OPTIONS_KEY
+    from pushbase.banking_util import PARAMETERS_KEY, MAIN_KEY
+    from ableton.v2.base.collection import IndexedDict
+    from ableton.v2.base import EventError, find_if
+
+    OPTIONS_PER_BANK = 7
+
+    _DescribedDeviceParameterBank_init_orig = DescribedDeviceParameterBank.__init__
+
+    def _DescribedDeviceParameterBank_init(self, device = None, banking_info = None, *a, **k):
+        _DescribedDeviceParameterBank_init_orig(self, device, banking_info, *a, **k)
+        log.info('yeah')
+
+
+    #DescribedDeviceParameterBankWithOptions.__init__ = _DescribedDeviceParameterBank_init
+
+    _update_parameters_orig = DescribedDeviceParameterBankWithOptions._update_parameters
+
+    def _update_parameters(self):
+        log.info('thisssss')
+        self._definition = IndexedDict(
+            (
+                ('Bank 1', {
+                    PARAMETERS_KEY: ('Dynamics', 'Macro 2', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
+                    OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
+                }),
+                ('Bank 2', {
+                    PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
+                    OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
+                })
+            )
+        )
+        _update_parameters_orig(self)
+
+
+    DescribedDeviceParameterBankWithOptions._update_parameters = _update_parameters
+
 
     _setup_bank_orig = DeviceComponent._setup_bank
 
@@ -202,20 +243,38 @@ def apply_options_patches():
         super(DeviceComponent, self)._setup_bank(device, bank_factory=ubermap_create_device_bank_with_options)
         try:
             self.__on_options_changed.subject = self._bank
-        except SlotError:
+        except EventError:
+            pass
+        except AttributeError:
+            log.info('Attribute error')
             pass
 
     DeviceComponent._setup_bank = _setup_bank
 
     _collect_options_orig = DescribedDeviceParameterBankWithOptions._collect_options
 
-    def _collect_options(self):
-        #ret = _collect_options_orig(self)
-        #log.info(str(ret))
-        #return ret
-        log.info(str(self._parameters[0]))
-        log.info(str(self._parameters[0].property_host))
+    def get_parameter_by_name(self, name):
+        return find_if(lambda p: p.name == name, self.parameters)
 
-        #return [DeviceOnOffOption('Hello')]
+    def _collect_options(self):
+        option_slots = self._current_option_slots()
+        log.info('_collect_options option_slots ' + str(option_slots))
+        options = [DeviceOnOffOption(name = 'Dynamics', property_host=get_parameter_by_name(self, 'Dynamics'), property_name='value')]
+        log.info('_collect_options options ' + str(options))
+        log.info('self.device ' + str(self._device))
+        return [ find_if(lambda o: o.name == str(slot_definition), options) for slot_definition in option_slots ]
 
     DescribedDeviceParameterBankWithOptions._collect_options = _collect_options
+
+    _current_option_slots_orig = DescribedDeviceParameterBankWithOptions._current_option_slots
+
+    def _current_option_slots(self):
+        bank = self._definition.value_by_index(self.index)
+        log.info('bank ' + str(bank))
+        log.info('index ' + str(self.index))
+        log.info('OPTIONS_KEY ' + str(OPTIONS_KEY))
+        ret = bank.get(OPTIONS_KEY) or ('',) * OPTIONS_PER_BANK
+        log.info('ret ' + str(ret))
+        return ret
+
+    #DescribedDeviceParameterBankWithOptions._current_option_slots = _current_option_slots
