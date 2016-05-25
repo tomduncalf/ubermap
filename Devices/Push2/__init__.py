@@ -18,10 +18,10 @@ def get_capabilities():
 
 
 def create_instance(c_instance):
-    UbermapDevicesPatches.apply_ubermap_patches()
-
     from .push2 import Push2
     from .push2_model import Root, Sender
     root = Root(sender=Sender(message_sink=c_instance.send_model_update, process_connected=c_instance.process_connected))
 
-    return Push2(c_instance=c_instance, model=root)
+    return UbermapDevicesPatches.apply_ubermap_patches(c_instance, root)
+
+    #return Push2(c_instance=c_instance, model=root)

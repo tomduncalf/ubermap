@@ -7,11 +7,17 @@ from Ubermap import UbermapDevices
 from Ubermap.UbermapLibs import log, config
 import inspect
 
+push2_instance = None
+
 def is_v1():
     return push_version == '1'
 
-def apply_ubermap_patches():
+def apply_ubermap_patches(c_instance, root):
+    from Push2 import push2
     log.info("Applying UbermapDevices patches")
+
+    global push2_instance
+    push2_instance = push2.Push2(c_instance=c_instance, model=root)
 
     apply_log_method_patches()
     apply_banking_util_patches()
@@ -19,6 +25,8 @@ def apply_ubermap_patches():
     # apply_device_component_patches()
     # apply_device_parameter_adapater_patches()
     apply_options_patches()
+
+    return push2_instance
 
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
@@ -255,7 +263,11 @@ def apply_options_patches():
     def _collect_options(self):
         def test():
             global is_thingy
-            #is_thingy = not is_thingy
+            global push2_instance
+            is_thingy = not is_thingy
+
+            push2_instance._bank_selection._bank_provider._on_device_parameters_changed()
+
             self._definition = IndexedDict(
                 (
                     ('Shaper 1', {

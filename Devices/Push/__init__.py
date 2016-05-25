@@ -21,7 +21,7 @@ def get_capabilities():
 def create_instance(c_instance):
     """ Creates and returns the Push script """
 
-    UbermapDevicesPatches.apply_ubermap_patches()
+    #UbermapDevicesPatches.apply_ubermap_patches()
 
     from .push import Push
 
