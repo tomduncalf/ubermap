@@ -14,9 +14,9 @@ def apply_ubermap_patches():
     log.info("Applying UbermapDevices patches")
 
     apply_log_method_patches()
-    # apply_banking_util_patches()
-    # apply_device_component_patches()
+    apply_banking_util_patches()
     # apply_device_parameter_bank_patches()
+    # apply_device_component_patches()
     # apply_device_parameter_adapater_patches()
     apply_options_patches()
 
@@ -38,15 +38,20 @@ def apply_log_method_patches():
 
 # BankingUtil
 
+is_thingy = False
+
 def apply_banking_util_patches():
     from pushbase import banking_util
 
-    # device_bank_names - return Ubermap bank names if defined, otherwise use the default
+    # device_bank_names
+    # The original looks if there is a definition for the device in the definitions dictionary,
+    # or if it is a M4L(?) device which exposes bank names via the LOM, so easiest way to inject our
+    # bank names is to skip all that if we have defined them in a config file (and dump them if not).
     device_bank_names_orig = banking_util.device_bank_names
 
     def device_bank_names(device, bank_size = 8, definitions = None):
         ubermap_banks = ubermap.get_custom_device_banks(device)
-        if ubermap_banks:
+        if ubermap_banks and not is_thingy:
             return ubermap_banks
         ubermap.dump_device(device)
 
@@ -189,7 +194,7 @@ def apply_device_parameter_adapater_patches():
 def apply_options_patches():
     from Push2.device_options import DeviceOnOffOption, DeviceSwitchOption, DeviceTriggerOption
     from Push2.device_parameter_bank_with_options import DescribedDeviceParameterBankWithOptions, create_device_bank_with_options
-    from pushbase.device_parameter_bank import DescribedDeviceParameterBank
+    from pushbase.device_parameter_bank import DeviceParameterBank, DescribedDeviceParameterBank
     from Push2.device_component import DeviceComponent
     from Push2.custom_bank_definitions import OPTIONS_KEY
     from pushbase.banking_util import PARAMETERS_KEY, MAIN_KEY
@@ -198,31 +203,22 @@ def apply_options_patches():
 
     OPTIONS_PER_BANK = 7
 
-    _DescribedDeviceParameterBank_init_orig = DescribedDeviceParameterBank.__init__
-
-    def _DescribedDeviceParameterBank_init(self, device = None, banking_info = None, *a, **k):
-        _DescribedDeviceParameterBank_init_orig(self, device, banking_info, *a, **k)
-        log.info('yeah')
-
-
-    #DescribedDeviceParameterBankWithOptions.__init__ = _DescribedDeviceParameterBank_init
-
     _update_parameters_orig = DescribedDeviceParameterBankWithOptions._update_parameters
 
     def _update_parameters(self):
-        log.info('thisssss')
-        self._definition = IndexedDict(
-            (
-                ('Bank 1', {
-                    PARAMETERS_KEY: ('Dynamics', 'Macro 2', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
-                    OPTIONS_KEY: ('OnOff', 'Switch', 'Callback', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
-                }),
-                ('Bank 2', {
-                    PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
-                    OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
-                })
+        if not self._definition:
+            self._definition = IndexedDict(
+                (
+                    ('Bank 1', {
+                        PARAMETERS_KEY: ('Dynamics', 'Macro 2', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
+                        OPTIONS_KEY: ('OnOff', 'Switch', 'Callback', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
+                    }),
+                    ('Bank 2', {
+                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
+                        OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
+                    })
+                )
             )
-        )
         _update_parameters_orig(self)
 
 
@@ -246,7 +242,7 @@ def apply_options_patches():
         except EventError:
             pass
         except AttributeError:
-            log.info('Attribute error')
+            # Don't know why this gets thrown but seems to not break too much...
             pass
 
     DeviceComponent._setup_bank = _setup_bank
@@ -258,30 +254,36 @@ def apply_options_patches():
 
     def _collect_options(self):
         def test():
-            log.info('BO')
+            global is_thingy
+            #is_thingy = not is_thingy
+            self._definition = IndexedDict(
+                (
+                    ('Shaper 1', {
+                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
+                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
+                    }),
+                    ('Filter 1', {
+                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
+                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
+                    })
+                )
+            )
+            # Need to trigger _on_device_parameters_changed somehow when we do this
+            self._on_parameters_changed()
+            log.info(str(self))
 
         option_slots = self._current_option_slots()
-        log.info('_collect_options option_slots ' + str(option_slots))
         options = [
             DeviceOnOffOption(name = 'OnOff', property_host=get_parameter_by_name(self, 'Dynamics'), property_name='value'),
             DeviceSwitchOption(name='Switch', default_label='Free', second_label='Sync', parameter=get_parameter_by_name(self, 'Dynamics')),
             DeviceTriggerOption(name='Callback', callback=test)
         ]
-        log.info('_collect_options options ' + str(options))
-        log.info('self.device ' + str(self._device))
+
         return [ find_if(lambda o: o.name == str(slot_definition), options) for slot_definition in option_slots ]
 
     DescribedDeviceParameterBankWithOptions._collect_options = _collect_options
 
-    _current_option_slots_orig = DescribedDeviceParameterBankWithOptions._current_option_slots
+    def name(self):
+        return 'hello'
 
-    def _current_option_slots(self):
-        bank = self._definition.value_by_index(self.index)
-        log.info('bank ' + str(bank))
-        log.info('index ' + str(self.index))
-        log.info('OPTIONS_KEY ' + str(OPTIONS_KEY))
-        ret = bank.get(OPTIONS_KEY) or ('',) * OPTIONS_PER_BANK
-        log.info('ret ' + str(ret))
-        return ret
-
-    #DescribedDeviceParameterBankWithOptions._current_option_slots = _current_option_slots
+    DeviceParameterBank._calc_name = name
