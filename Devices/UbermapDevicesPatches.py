@@ -187,7 +187,7 @@ def apply_device_parameter_adapater_patches():
 # Options
 
 def apply_options_patches():
-    from Push2.device_options import DeviceOnOffOption
+    from Push2.device_options import DeviceOnOffOption, DeviceSwitchOption, DeviceTriggerOption
     from Push2.device_parameter_bank_with_options import DescribedDeviceParameterBankWithOptions, create_device_bank_with_options
     from pushbase.device_parameter_bank import DescribedDeviceParameterBank
     from Push2.device_component import DeviceComponent
@@ -215,7 +215,7 @@ def apply_options_patches():
             (
                 ('Bank 1', {
                     PARAMETERS_KEY: ('Dynamics', 'Macro 2', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
-                    OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
+                    OPTIONS_KEY: ('OnOff', 'Switch', 'Callback', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
                 }),
                 ('Bank 2', {
                     PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Macro 3', 'Macro 4', 'Macro 5', 'Macro 6', 'Macro 7', 'Macro 8'),
@@ -257,9 +257,16 @@ def apply_options_patches():
         return find_if(lambda p: p.name == name, self.parameters)
 
     def _collect_options(self):
+        def test():
+            log.info('BO')
+
         option_slots = self._current_option_slots()
         log.info('_collect_options option_slots ' + str(option_slots))
-        options = [DeviceOnOffOption(name = 'Dynamics', property_host=get_parameter_by_name(self, 'Dynamics'), property_name='value')]
+        options = [
+            DeviceOnOffOption(name = 'OnOff', property_host=get_parameter_by_name(self, 'Dynamics'), property_name='value'),
+            DeviceSwitchOption(name='Switch', default_label='Free', second_label='Sync', parameter=get_parameter_by_name(self, 'Dynamics')),
+            DeviceTriggerOption(name='Callback', callback=test)
+        ]
         log.info('_collect_options options ' + str(options))
         log.info('self.device ' + str(self._device))
         return [ find_if(lambda o: o.name == str(slot_definition), options) for slot_definition in option_slots ]
