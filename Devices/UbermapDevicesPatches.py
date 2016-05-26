@@ -214,7 +214,20 @@ def apply_options_patches():
     _update_parameters_orig = DescribedDeviceParameterBankWithOptions._update_parameters
 
     def _update_parameters(self):
-        if not self._definition:
+        if is_thingy:
+            self._definition = IndexedDict(
+                (
+                    ('Shaper 1', {
+                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
+                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
+                    }),
+                    ('Filter 1', {
+                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
+                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
+                    })
+                )
+            )
+        else:
             self._definition = IndexedDict(
                 (
                     ('Bank 1', {
@@ -226,7 +239,14 @@ def apply_options_patches():
                         OPTIONS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics')
                     })
                 )
+
             )
+
+        # should be: if changed
+        global push2_instance
+        if hasattr(push2_instance, '_bank_selection'):
+            push2_instance._bank_selection._bank_provider._on_device_parameters_changed()
+
         _update_parameters_orig(self)
 
 
@@ -263,23 +283,8 @@ def apply_options_patches():
     def _collect_options(self):
         def test():
             global is_thingy
-            global push2_instance
             is_thingy = not is_thingy
 
-            push2_instance._bank_selection._bank_provider._on_device_parameters_changed()
-
-            self._definition = IndexedDict(
-                (
-                    ('Shaper 1', {
-                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
-                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
-                    }),
-                    ('Filter 1', {
-                        PARAMETERS_KEY: ('Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics', 'Dynamics'),
-                        OPTIONS_KEY: ('', '', 'Callback', '', '', '', '', '')
-                    })
-                )
-            )
             # Need to trigger _on_device_parameters_changed somehow when we do this
             self._on_parameters_changed()
             log.info(str(self))
