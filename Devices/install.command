@@ -23,6 +23,7 @@ mkdir -p "$LIVE_MIDI_REMOTE_PATH/Ubermap"
 cp ../Common/__init__.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp ../Common/configobj.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp ../Common/UbermapLibs.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
+cp -R ../Common/yaml "$LIVE_MIDI_REMOTE_PATH/Ubermap/yaml"
 cp UbermapDevices.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp UbermapDevicesPatches.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp Push/__init__.py "$LIVE_MIDI_REMOTE_PATH/Push/"
@@ -35,6 +36,7 @@ cp_if_ne ../Config/global.cfg ~/Ubermap/
 
 # Remove .pyc
 rm "$LIVE_MIDI_REMOTE_PATH/Ubermap/*.pyc"
+rm "$LIVE_MIDI_REMOTE_PATH/Ubermap/yaml/*.pyc"
 rm "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc"
 rm "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc"
 

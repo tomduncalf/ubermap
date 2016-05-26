@@ -6,6 +6,7 @@
 from Ubermap import UbermapDevices
 from Ubermap.UbermapLibs import log, config
 import inspect
+import yaml
 
 push2_instance = None
 
@@ -15,6 +16,7 @@ def is_v1():
 def apply_ubermap_patches(c_instance, root):
     from Push2 import push2
     log.info("Applying UbermapDevices patches")
+    log.info(yaml.load("a = b"))
 
     global push2_instance
     push2_instance = push2.Push2(c_instance=c_instance, model=root)
