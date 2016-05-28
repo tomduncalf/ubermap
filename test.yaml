@@ -1,0 +1,67 @@
+Config:
+  MappingEnabled: true
+  PushVersion: 2
+
+Device:
+  Name: Devastor
+  Hash: 0eda44b85eb0c26d1fab12c2bfb3922a
+
+Banks:
+  - Distortion:
+    - Shaper:
+        Parameters:
+          - 1_Dynamics: Dynamics
+          - 2_Preamp: Preamp
+          - 3_Threshold: Threshold
+          - 4_Shape: Shape
+          - 21_Distortion Function: Distortion Function
+    - Output:
+        Parameters:
+          - 20_Output Volume: Output Volume
+          - 22_FX: FX
+
+  - Filters:
+    - Filter 1:
+        Parameters:
+          - 5_Filter 1 Type: Filter 1 Type
+          - 6_Filter 1 Route: Filter 1 Route
+          - 7_Filter 1 Cutoff: Filter 1 Cutoff
+          - 8_Filter 1 Reso/Bandwidth: Filter 1 Reso/Bandwidth
+          - 9_Filter 1 Volume: Filter 1 Volume
+    - Filter 2:
+        Parameters:
+          - 10_Filter 2 Type: Filter 2 Type
+          - 11_Filter 2 Route: Filter 2 Route
+          - 12_Filter 2 Cutoff: Filter 2 Cutoff
+          - 13_Filter 2 Reso/Bandwidth: Filter 2 Reso/Bandwidth
+          - 14_Filter 2 Volume: Filter 2 Volume
+    - Filter 3:
+        Parameters:
+          - 15_Filter 3 Type: Filter 3 Type
+          - 16_Filter 3 Route: Filter 3 Route
+          - 17_Filter 3 Cutoff: Filter 3 Cutoff
+          - 18_Filter 3 Reso/Bandwidth: Filter 3 Reso/Bandwidth
+          - 19_Filter 3 Volume: Filter 3 Volume
+
+
+Global:
+  Buttons:
+
+ParameterInfo:
+  5_Filter 1 Type: Filter Type
+  6_Filter 1 Route:
+    Values:
+      - Pre
+      - Post
+
+ParameterValueTypes:
+  Filter Type:
+    - Off: 0
+    - LP: 0.125
+    - BP: 0.375
+    - HP: 0.625
+    - BR: 0.865
+
+# DO NOT DELETE BELOW THIS LINE
+# UbermapConfigVersion 1
+# UbermapVersion 2.0.0
