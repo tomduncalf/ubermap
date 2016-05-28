@@ -1,0 +1,82 @@
+Config:
+  MappingEnabled: true
+  PushVersion: 2
+
+Device:
+  Name: Synth1
+  Hash: 0e4ed5852ea33c572b7c4d2aaf1f302f
+
+Banks:
+  - Oscillators:
+    - OSC1/2:
+        Parameters:
+          - 1_osc1 shape: OSC1 Shape
+          - 77_osc1 detune: OSC1 Detune
+          - 46_osc1 FM: OSC1 FM
+          - 91_osc1 sub gain: OSC1 Sub Gain
+          - 92_osc1 sub shape: OSC1 Sub Shape
+          - 2_osc2 shape: OSC2 Shape
+          - 3_osc2 pitch: OSC2 Pitch
+          - 4_osc2 fine tune: OSC2 Fine
+        Buttons:
+          # Default type is OnOff
+          - 93_osc1 sub octave: OSC1 Sub Octave
+          - 8_osc2 ring modulation: OSC2 Ring
+          - 7_osc2 sync: OSC2 Sync
+          - 5_osc2 kbd track: OSC2 Track
+    - Mix/Mod Env:
+        Parameters:
+          - 6_osc mix: OSC Mix
+          - 9_osc pulse width: OSC PW
+          - 88_osc phase shift: OSC Phase
+          - 73_osc1,2 fine tune: OSC Tune
+          - 10_osc key shift: OSC Key Shift
+          - 13_osc mod env attack: Mod Env Attack
+          - 14_osc mod env decay: Mod Env Decay
+          - 12_osc mod env amount: Mod Env Amount
+        Buttons:
+          - 11_osc mod env on/off: Mod Env On
+          - 72_osc mod dest: Mod Dest
+
+Global:
+  Buttons:
+
+ParameterInfo:
+  1_osc1 shape: OSC1/Sub Shape
+  92_osc1 sub shape: OSC1/Sub Shape
+  2_osc2 shape:
+    Type: NamedRanges
+    RangeStartPoints:
+      - Tri: 0.12
+      - Squ: 0.38
+      - Saw: 0.62
+      - Noise: 0.88
+  93_osc1 sub octave:
+    Type: Toggle
+    States:
+      - 0.25: 0oct
+      - 0.75: -1oct
+  10_osc key shift:
+    Type: NumberRange
+    Start: -24
+    End: 24
+    Step: 1
+  72_osc mod dest:
+    Type: Toggle
+    States:
+      - 0.17: OSC2
+      - 0.5: FM
+      - 0.83: P/W
+
+ParameterInfoTypes:
+  OSC1/Sub Shape:
+    Type: NamedRanges
+    RangeStartPoints:
+      - Sin: 0.12
+      - Tri: 0.38
+      - Squ: 0.62
+      - Saw: 0.88
+
+# DO NOT DELETE BELOW THIS LINE
+# UbermapConfigVersion 1
+# UbermapVersion 2.0.0
