@@ -1,15 +1,15 @@
-# Ubermap v1.0.0b1 [![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellowgreen.svg)](https://www.paypal.me/tomduncalf/10)
+# Ubermap v1.0.0b2 [![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellowgreen.svg)](https://www.paypal.me/tomduncalf/10)
 
 ## Introduction
 
-Ubermap is a set of modifications to Ableton Live to add new functionality to Ableton, particularly aimed at Push users.
+Ubermap is a script for Ableton Live to allow Push users to create custom parameter mappings for VST and AU plugins on the Push display.
 
 Features:
 
-- Easy customisation of device bank and parameter names displayed on Push, for both internal and plugin devices, using simple configuration files for each device
+- Easy customisation of device bank and parameter names displayed on Push for devices, using simple configuration files
 - Modify configurations instantly without reloading Live
 
-For information on installing and using each feature, please read the README.md in the relevant directory (BrowserPreview or Devices) - each component can be installed separately.
+## For more information, [see the main README](https://github.com/tomduncalf/ubermap/blob/master/Devices/README.md)
 
 ## Disclaimer
 
@@ -21,17 +21,7 @@ The author cannot be help responsible for any harm or damage resulting from the 
 
 ## Licence
 
-This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License (http://creativecommons.org/licenses/by-nc/4.0/deed.en_US)
-
-## Compatibility
-
-Ubermap requires Ableton Live 9.6.2b1, Push 2 and a Mac. I've tried getting it up and running on Windows briefly without luck (Ableton crashed every time I loaded it), for now it's Mac only but I do intend to support Windows at some point - although you are welcome to try and get it up and running yourself. It may or may not work with Push 1, I had to sell mine to get Push 2 but I will try and support it where possible!
-
-## Installation
-
-Installation notes are contained in the individual README.md files, but one thing to note is that as the core Ubermap libs are shared, if you upgrade (i.e. reinstall over the top of the old version) one component to a new release of Ubermap, you should also upgrade the others, as the shared libraries may have changed, making the old component incompatible.
-
-I'll consider fixing this in a better way (e.g. have the libs contained in each component) in future if there is demand.
+This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License 
 
 ## Logging
 
