@@ -9,7 +9,7 @@ Features:
 - Easy customisation of device bank and parameter names displayed on Push for devices, using simple configuration files
 - Modify configurations instantly without reloading Live
 
-## For more information, [see the main README](https://github.com/tomduncalf/ubermap/blob/master/Devices/README.md)
+## For more information, [see the main README](https://github.com/tomduncalf/ubermap/blob/master/Devices/README.md) and [the thread on the Ableton forum](https://forum.ableton.com/viewtopic.php?f=55&t=221501&sid=f8b1a012a123a51a16838c8698a28b8a)
 
 ## Disclaimer
 
