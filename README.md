@@ -1,3 +1,10 @@
+# WARNING : for live 10 version
+
+Need to pach file MIDI Remote Scripts\Push2\model\repr.pyc for method DeviceParameterAdapter._get_image_filenames line 173 :
+#                except (AttributeError, RuntimeError):
+# fix for ubermap
+                except (AttributeError, RuntimeError, ArgumentError):
+
 # Ubermap v0.1 alpha
 
 ## Introduction
