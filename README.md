@@ -1,5 +1,9 @@
 # Ubermap v1.0.0b2 [![PayPal donate button](https://img.shields.io/badge/paypal-donate-yellowgreen.svg)](https://www.paypal.me/tomduncalf/10)
 
+# Note
+
+This project is not currently maintained by the author but please check out the [forks that others have created](https://github.com/tomduncalf/ubermap/network/members) e.g. https://github.com/danielrotaermel/ubermap and https://github.com/Beennnn/ubermap with fixes and Live 10 support (I have not personally tested any of these)
+
 ## Introduction
 
 Ubermap is a script for Ableton Live to allow Push users to create custom parameter mappings for VST and AU plugins on the Push display.
