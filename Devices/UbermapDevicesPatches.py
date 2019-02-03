@@ -36,7 +36,7 @@ def apply_log_method_patches():
 ############################################################################################################
 
 # BankingUtil
-from pushbase import banking_util
+from ableton.v2.control_surface import banking_util
 
 def apply_banking_util_patches():
     # device_bank_names - return Ubermap bank names if defined, otherwise use the default
@@ -67,7 +67,7 @@ def apply_banking_util_patches():
 ############################################################################################################
 
 # DeviceParameterBank
-from pushbase.device_parameter_bank import DeviceParameterBank
+from ableton.v2.control_surface.device_parameter_bank import DeviceParameterBank
 
 def apply_device_parameter_bank_patches():
     # _collect_parameters - this method is called by _update_parameters to determine whether we should
@@ -90,8 +90,8 @@ def apply_device_parameter_bank_patches():
 ############################################################################################################
 
 # DeviceComponent
-from pushbase.device_component import DeviceComponent
-from pushbase.parameter_provider import ParameterInfo
+from ableton.v2.control_surface.components.device import DeviceComponent
+from ableton.v2.control_surface.parameter_provider import ParameterInfo
 
 def apply_device_component_patches():
     # _get_provided_parameters - return Ubermap parameter names if defined, otherwise use the default
