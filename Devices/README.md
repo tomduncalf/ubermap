@@ -43,7 +43,7 @@ To install the script manually (or on Windows - please note this has not been te
 8. Create a folder called Ubermap in your user folder (e.g. `C:\Users\Tom\Ubermap`)
 9. Create a folder called Devices inside this Ubermap folder (e.g. `C:\Users\Tom\Ubermap\Devices`)
 10. Copy all the files from the unzipped Config folder into the Ubermap folder you created in step 8
-11. Create an `Options.txt` as described above (not sure where this should live on Windows)
+11. Create an `Options.txt` file as described above, in Live Preferences folder (e.g. `C:\Users\Tom\AppData\Roaming\Ableton\Live 10.0.0\Preferences`)
 12. (Re)start Live
 
 ## Summary
