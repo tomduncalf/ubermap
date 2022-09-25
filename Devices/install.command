@@ -10,12 +10,12 @@ function cp_if_ne {
     fi
 }
 
-LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 9.6 Beta.app/Contents/App-Resources/MIDI Remote Scripts"
+LIVE_MIDI_REMOTE_PATH="/Applications/Ableton Live 11.2 Beta.app/Contents/App-Resources/MIDI Remote Scripts"
 
 cd ${0%/*}
 
 # Backup
-cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc.ubermap-backup"
+#cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc" "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc.ubermap-backup"
 cp_if_ne "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc" "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc.ubermap-backup"
 
 # Copy
@@ -25,7 +25,7 @@ cp ../Common/configobj.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp ../Common/UbermapLibs.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp UbermapDevices.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
 cp UbermapDevicesPatches.py "$LIVE_MIDI_REMOTE_PATH/Ubermap/"
-cp Push/__init__.py "$LIVE_MIDI_REMOTE_PATH/Push/"
+#cp Push/__init__.py "$LIVE_MIDI_REMOTE_PATH/Push/"
 cp Push2/__init__.py "$LIVE_MIDI_REMOTE_PATH/Push2/"
 
 # Copy config
@@ -35,7 +35,7 @@ cp_if_ne ../Config/global.cfg ~/Ubermap/
 
 # Remove .pyc
 rm "$LIVE_MIDI_REMOTE_PATH/Ubermap/*.pyc"
-rm "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc"
+#rm "$LIVE_MIDI_REMOTE_PATH/Push/__init__.pyc"
 rm "$LIVE_MIDI_REMOTE_PATH/Push2/__init__.pyc"
 
 echo "Ubermap installed - now restart Ableton Live."

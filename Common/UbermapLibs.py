@@ -1,4 +1,6 @@
 import os
+import logging
+logger = logging.getLogger(__name__)
 
 LOG_ENABLED = True
 UBERMAP_ROOT = MAPPING_DIRECTORY = os.path.join(os.path.expanduser("~"), 'Ubermap')
@@ -29,18 +31,21 @@ class UbermapLogger:
         self._get_log_file(name).flush()
 
     def debug(self, msg, name = None):
-        if self.cfg.get('Log', 'Debug') == 'True':
-            self.write('DEBUG: ' + msg, name)
+        logger.debug(msg)
+        # if self.cfg.get('Log', 'Debug') == 'True':
+        #     self.write('DEBUG: ' + msg, name)
 
     def info(self, msg, name = None):
-        if self.cfg.get('Log', 'Info') == 'True':
-            self.write('INFO: ' + msg, name)
+        logger.info(msg)
+        # if self.cfg.get('Log', 'Info') == 'True':
+        #     self.write('INFO: ' + msg, name)
 
     def error(self, msg, name = None):
-        self.write('ERROR: ' + msg, name)
+        logger.error(msg)
+        # self.write('ERROR: ' + msg, name)
 
 
-from configobj import ConfigObj
+from . configobj import ConfigObj
 class UbermapConfig:
 
     _config_cache = {}

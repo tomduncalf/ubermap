@@ -15,9 +15,9 @@ def apply_ubermap_patches():
 
     apply_log_method_patches()
     apply_banking_util_patches()
-    apply_device_component_patches()
-    apply_device_parameter_bank_patches()
-    apply_device_parameter_adapater_patches()
+    # apply_device_component_patches()
+    # apply_device_parameter_bank_patches()
+    # apply_device_parameter_adapater_patches()
 
 # Create singleton UbermapDevices instance
 ubermap = UbermapDevices.UbermapDevices()
@@ -40,29 +40,29 @@ from pushbase import banking_util
 
 def apply_banking_util_patches():
     # device_bank_names - return Ubermap bank names if defined, otherwise use the default
-    device_bank_names_orig = banking_util.device_bank_names
+    device_bank_names_orig = banking_util.BankingInfo.device_bank_names
 
-    def device_bank_names(device, bank_size = 8, definitions = None):
-        ubermap_banks = ubermap.get_custom_device_banks(device)
-        if ubermap_banks:
-            return ubermap_banks
-        ubermap.dump_device(device)
+    def device_bank_names(self, device, **k):
+        # ubermap_banks = ubermap.get_custom_device_banks(device)
+        # if ubermap_banks:
+        #     return ubermap_banks
+        # ubermap.dump_device(device)
 
-        return device_bank_names_orig(device, bank_size, definitions)
+        return device_bank_names_orig(self, device, **k)
 
-    banking_util.device_bank_names = device_bank_names
+    banking_util.BankingInfo.device_bank_names = device_bank_names
 
     # device_bank_count - return Ubermap bank count if defined, otherwise use the default
-    device_bank_count_orig = banking_util.device_bank_count
+    # device_bank_count_orig = banking_util.device_bank_count
 
-    def device_bank_count(device, bank_size = 8, definition = None, definitions = None):
-        ubermap_banks = ubermap.get_custom_device_banks(device)
-        if ubermap_banks:
-            return len(ubermap_banks)
+    # def device_bank_count(device, bank_size = 8, definition = None, definitions = None):
+    #     ubermap_banks = ubermap.get_custom_device_banks(device)
+    #     if ubermap_banks:
+    #         return len(ubermap_banks)
 
-        return device_bank_count_orig(device, bank_size, definition, definitions)
+    #     return device_bank_count_orig(device, bank_size, definition, definitions)
 
-    banking_util.device_bank_count = device_bank_count
+    # banking_util.device_bank_count = device_bank_count
 
 ############################################################################################################
 
@@ -112,7 +112,7 @@ def apply_device_component_patches():
 
         if ubermap_params:
             param_bank = ubermap_params[self._bank.index]
-            param_info = map(lambda parameter: _get_parameter_info(self, parameter), param_bank)
+            param_info = [_get_parameter_info(self, parameter) for parameter in param_bank]
             return param_info
 
         orig_params = _get_provided_parameters_orig(self)

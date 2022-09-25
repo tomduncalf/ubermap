@@ -1,5 +1,5 @@
 import os.path
-from configobj import ConfigObj
+from . configobj import ConfigObj
 from functools import partial
 import hashlib
 from Ubermap.UbermapLibs import log, log_call, config
@@ -86,7 +86,7 @@ class UbermapDevices:
             self.dump_device(device)
             return False
 
-        return device_config.get(self.SECTION_BANKS).keys()
+        return list(device_config.get(self.SECTION_BANKS).keys())
 
     def get_custom_device_params(self, device, bank_name = None):
         if not bank_name:
@@ -98,7 +98,7 @@ class UbermapDevices:
 
         def parse_custom_parameter_values(values):
             # Split the values on || to see if we have custom value start points specified
-            values_split = map(lambda s: s.split('||'), values)
+            values_split = [s.split('||') for s in values]
             has_value_start_points = all(len(x) == 2 for x in values_split)
             if not has_value_start_points:
                 return [values, None]
@@ -132,7 +132,7 @@ class UbermapDevices:
                 count = count + 1
 
         def names_to_params(bank):
-            return map(partial(get_parameter_by_name, device), bank.items())
+            return list(map(partial(get_parameter_by_name, device), list(bank.items())))
 
-        ret = map(names_to_params, device_config.get(bank_name).values())
+        ret = list(map(names_to_params, list(device_config.get(bank_name).values())))
         return ret
