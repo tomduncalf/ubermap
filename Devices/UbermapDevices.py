@@ -26,7 +26,6 @@ class UbermapDevices:
             params = ''
             for i in device.parameters[1:]:
                 params += i.original_name
-            name += '_' + hashlib.md5(params.encode('utf-8')).hexdigest()
         return name
 
     def get_device_filename(self, device):
