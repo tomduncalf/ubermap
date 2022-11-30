@@ -1,8 +1,8 @@
 import os.path
+import re
 from . configobj import ConfigObj
 from functools import partial
-import hashlib
-from Ubermap.UbermapLibs import log, log_call, config
+from Ubermap.UbermapLibs import log, config
 
 class UbermapDevices:
     PARAMS_PER_BANK = 8
@@ -24,9 +24,8 @@ class UbermapDevices:
         name = device.class_display_name
         if self.cfg.get('use_md5'):
             params = ''
-            for i in device.parameters[1:]:
-                params += i.original_name
-            name += '_' + hashlib.md5(params.encode('utf-8')).hexdigest()
+            for device_parameter in device.parameters[1:]:
+                params += device_parameter.original_name
         return name
 
     def get_device_filename(self, device):
@@ -57,13 +56,13 @@ class UbermapDevices:
         count = 0
         bank = 1
         total_count = 1
-        for i in device.parameters[1:]:
+        for device_parameter in device.parameters[1:]:
             if(count == 0):
                 section = 'Bank ' + str(bank)
                 config[self.SECTION_BANKS][section] = {}
                 bank = bank + 1
 
-            config[self.SECTION_BANKS][section][str(total_count) + "_" + i.original_name] = i.original_name
+            config[self.SECTION_BANKS][section][str(total_count) + "_" + device_parameter.original_name] = device_parameter.original_name
 
             count = count + 1
             total_count = total_count + 1
@@ -119,16 +118,28 @@ class UbermapDevices:
             if values_type:
                 return parse_custom_parameter_values(values_type)
 
-        def get_parameter_by_name(device, nameMapping):
+        def get_parameter_by_name(device, name_mapping):
             count = 0
-            for i in device.parameters:
-                if nameMapping[0] == str(count) + "_" + i.original_name or nameMapping[0] == i.original_name:
-                    log.info("got " + nameMapping[1] + " for " + nameMapping[0])
-                    i.custom_name = nameMapping[1]
+            for device_parameter in device.parameters:
+                original_name = name_mapping[0]
+                if (original_name == device_parameter.original_name) \
+                        or (original_name == str(count) + "_" + device_parameter.original_name) \
+                        or re.match("^\\d+_\\w+$" + device_parameter.original_name, original_name):
+                    
+                    if not name_mapping[1]:
+                        custom_name = original_name
+                    elif name_mapping[1] == "*":
+                        # this line just splits words by case: SomeWord -> Some Word
+                        custom_name = " ".join(re.sub('([A-Z][a-z]+)', r' \1', re.sub('([A-Z]+)', r' \1', original_name)).split())
+                    else:
+                        custom_name = name_mapping[1]
 
-                    [i.custom_parameter_values, i.custom_parameter_start_points] = get_custom_parameter_values(nameMapping[0])
+                    device_parameter.custom_name = custom_name
 
-                    return i
+                    [device_parameter.custom_parameter_values, device_parameter.custom_parameter_start_points] = \
+                        get_custom_parameter_values(original_name)
+
+                    return device_parameter
                 count = count + 1
 
         def names_to_params(bank):
